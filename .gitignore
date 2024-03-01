@@ -1,2 +1,4 @@
 .DS_Store
-node_modules/
+# apparently github actions requires you commit your node modules?
+# seems weird but i can't find out how to do it otherwise.
+# node_modules/
