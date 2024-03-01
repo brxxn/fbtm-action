@@ -4,6 +4,7 @@
   "description": "GitHub action to manage fbtm repo",
   "main": "index.js",
   "scripts": {
+    "build": "tsc && ncc build lib/index.js",
     "test": "echo \"no tests provided\""
   },
   "repository": {
@@ -19,6 +20,7 @@
   "devDependencies": {
     "@octokit/webhooks-definitions": "^3.67.3",
     "@types/node": "^20.11.24",
+    "@vercel/ncc": "^0.38.1",
     "typescript": "^5.3.3"
   },
   "dependencies": {
