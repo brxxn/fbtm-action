@@ -784,7 +784,7 @@ const fetchRevProduct = (rev, dir, product) => __awaiter(void 0, void 0, void 0,
         return false;
     }
     yield io.mkdirP(`${dir}/${product}/`);
-    exit = yield exec.exec('unzip', [archiveFile, '-d', `${dir}/${product}/`]);
+    exit = yield exec.exec('unzip', [archiveFile, '-d', '-qq', `${dir}/${product}/`]);
     return exit === 0;
 });
 const fetchRev = (rev, dir) => __awaiter(void 0, void 0, void 0, function* () {
@@ -1050,6 +1050,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const constants_1 = __nccwpck_require__(5105);
 const registry_1 = __importDefault(__nccwpck_require__(6617));
+const core = __importStar(__nccwpck_require__(2186));
 const io = __importStar(__nccwpck_require__(7436));
 const performSearchForProduct = (rev, path, product) => __awaiter(void 0, void 0, void 0, function* () {
     yield io.mkdirP(`./searches/${product}/${rev}/`);
@@ -1064,11 +1065,18 @@ const performSearchForProduct = (rev, path, product) => __awaiter(void 0, void 0
     return (yield Promise.all(promises)).every(x => x);
 });
 const performSearch = (rev, path) => __awaiter(void 0, void 0, void 0, function* () {
-    let promises = [];
-    for (const product of constants_1.SUPPORTED_PRODUCTS) {
-        promises.push(performSearchForProduct(rev, path, product));
+    try {
+        let promises = [];
+        for (const product of constants_1.SUPPORTED_PRODUCTS) {
+            promises.push(performSearchForProduct(rev, path, product));
+        }
+        return (yield Promise.all(promises)).every(x => x);
     }
-    return (yield Promise.all(promises)).every(x => x);
+    catch (exception) {
+        // probably not supposed to do this but idgaf
+        core.warning(exception);
+        return false;
+    }
 });
 exports["default"] = performSearch;
 //# sourceMappingURL=searcher.js.map

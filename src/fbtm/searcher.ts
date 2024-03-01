@@ -1,5 +1,6 @@
 import { SUPPORTED_PRODUCTS } from "../constants";
 import searchRegistry from "./search/registry";
+import * as core from '@actions/core';
 import * as io from '@actions/io';
 
 const performSearchForProduct = async (rev: string, path: string, product: string) => {
@@ -16,11 +17,17 @@ const performSearchForProduct = async (rev: string, path: string, product: strin
 }
 
 const performSearch = async (rev: string, path: string) => {
-  let promises: Promise<boolean>[] = [];
-  for (const product of SUPPORTED_PRODUCTS) {
-    promises.push(performSearchForProduct(rev, path, product));
+  try {
+    let promises: Promise<boolean>[] = [];
+    for (const product of SUPPORTED_PRODUCTS) {
+      promises.push(performSearchForProduct(rev, path, product));
+    }
+    return (await Promise.all(promises)).every(x => x);
+  } catch (exception) {
+    // probably not supposed to do this but idgaf
+    core.warning(exception as string);
+    return false;
   }
-  return (await Promise.all(promises)).every(x => x);
 }
 
 export default performSearch;
