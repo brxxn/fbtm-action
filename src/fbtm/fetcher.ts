@@ -14,7 +14,7 @@ const fetchRevProduct = async (rev: string, dir: string, product: string) => {
     return false;
   }
   await io.mkdirP(`${dir}/${product}/`);
-  exit = await exec.exec('unzip', [archiveFile, '-qq', '-d', `${dir}/${product}/`]);
+  exit = await exec.exec('unzip', ['-qq', archiveFile, '-d', `${dir}/${product}/`]);
   return exit === 0;
 }
 
