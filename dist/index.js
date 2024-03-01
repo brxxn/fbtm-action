@@ -942,7 +942,7 @@ const relayOperationSearchType = {
     shouldDiff: true,
     performSearch: (targetDirectory, outputFile) => __awaiter(void 0, void 0, void 0, function* () {
         const outputStream = fs.createWriteStream(outputFile, { flags: 'a' });
-        const result = yield exec.exec('grep', ['-Rh', '"RelayOperation\\",\\["', targetDirectory], {
+        const result = yield exec.exec('grep', ['-Rh', 'RelayOperation",\\[', targetDirectory], {
             outStream: outputStream
         });
         return result === 0;
@@ -1004,7 +1004,7 @@ const xControllerSearch = {
     shouldDiff: true,
     performSearch: (targetDirectory, outputFile) => __awaiter(void 0, void 0, void 0, function* () {
         const outputStream = fs.createWriteStream(outputFile, { flags: 'a' });
-        const result = yield exec.exec('grep', ['-Rh', '"XController\\").cr"', targetDirectory], {
+        const result = yield exec.exec('grep', ['-Rh', 'XController\\").cr', targetDirectory], {
             outStream: outputStream
         });
         return result === 0;
