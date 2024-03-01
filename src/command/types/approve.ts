@@ -164,6 +164,15 @@ const approveCommand: Command = {
     await updateProcessing(ISSUE_REPLY_TEMPLATES.REV_PROCESSED, {
       ref: updatedRef
     });
+    
+    // close issue upon completion
+    await octokit.rest.issues.update({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      issue_number: github.context.issue.number,
+      state: 'closed',
+      state_reason: 'completed'
+    });
   }
 };
 

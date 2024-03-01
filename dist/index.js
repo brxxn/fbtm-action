@@ -321,6 +321,14 @@ const approveCommand = {
         yield updateProcessing(constants_1.ISSUE_REPLY_TEMPLATES.REV_PROCESSED, {
             ref: updatedRef
         });
+        // close issue upon completion
+        yield octokit.rest.issues.update({
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+            issue_number: github.context.issue.number,
+            state: 'closed',
+            state_reason: 'completed'
+        });
     })
 };
 exports["default"] = approveCommand;
@@ -872,7 +880,7 @@ const jsRoutePathSearch = {
     shouldDiff: true,
     performSearch: (targetDirectory, outputFile) => __awaiter(void 0, void 0, void 0, function* () {
         const outputStream = fs.createWriteStream(outputFile, { flags: 'a' });
-        const result = yield exec.exec('grep', ['-Rh', 'jsRouteBuilder")("', targetDirectory], {
+        const result = yield exec.exec('grep', ['-Rh', '"jsRouteBuilder\\")(\\""', targetDirectory], {
             outStream: outputStream
         });
         return result === 0;
@@ -934,7 +942,7 @@ const relayOperationSearchType = {
     shouldDiff: true,
     performSearch: (targetDirectory, outputFile) => __awaiter(void 0, void 0, void 0, function* () {
         const outputStream = fs.createWriteStream(outputFile, { flags: 'a' });
-        const result = yield exec.exec('grep', ['-Rh', 'RelayOperation",[', targetDirectory], {
+        const result = yield exec.exec('grep', ['-Rh', '"RelayOperation\\",\\["', targetDirectory], {
             outStream: outputStream
         });
         return result === 0;
@@ -996,7 +1004,7 @@ const xControllerSearch = {
     shouldDiff: true,
     performSearch: (targetDirectory, outputFile) => __awaiter(void 0, void 0, void 0, function* () {
         const outputStream = fs.createWriteStream(outputFile, { flags: 'a' });
-        const result = yield exec.exec('grep', ['-Rh', 'XController").cr', targetDirectory], {
+        const result = yield exec.exec('grep', ['-Rh', '"XController\\").cr"', targetDirectory], {
             outStream: outputStream
         });
         return result === 0;
