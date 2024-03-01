@@ -237,14 +237,14 @@ const approveCommand = {
             .map(x => x.split(': '))
             .filter(x => x.length === 2 && x[0] === 'fb-rev');
         if (bodyParts.length > 0) {
-            if (rev === '' || bodyParts.length <= 2) {
+            if ((rev !== '' && bodyParts[0][1] !== rev) || bodyParts.length <= 2) {
                 yield replyWithTemplate(constants_1.ISSUE_REPLY_TEMPLATES.MULTIPLE_REVS, {});
                 return;
             }
             rev = bodyParts[0][1];
         }
         // make sure we have a rev and that it looks like a rev
-        if (rev === '' || (!flags.includes('unsupported-skipvalidrevcheck') || !rev.match(/^[0-9]+$/))) {
+        if (rev === '' || (!flags.includes('unsupported-skipvalidrevcheck') && !rev.match(/^[0-9]+$/))) {
             yield replyWithTemplate(constants_1.ISSUE_REPLY_TEMPLATES.REV_NOT_FOUND, {});
             return;
         }
