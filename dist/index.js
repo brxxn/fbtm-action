@@ -709,7 +709,7 @@ const diffFile = (oldFile, newFile, outputFile) => __awaiter(void 0, void 0, voi
     const added = newContent.filter(x => !oldContent.includes(x));
     const removed = oldContent.filter(x => !newContent.includes(x));
     const content = `// new lines (count = ${added.length}):\n\n${added.join('\n')}\n\n// old lines (count = ${removed.length})\n\n${removed.join('\n')}`;
-    fs.writeFileSync(outputFile, content, { encoding: 'utf-8', mode: 'a' });
+    fs.writeFileSync(outputFile, content, { encoding: 'utf-8' });
 });
 const performDiffForProduct = (oldRev, newRev, product) => __awaiter(void 0, void 0, void 0, function* () {
     const oldSearchRoot = `./searches/${product}/${oldRev}/`;

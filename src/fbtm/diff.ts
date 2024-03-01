@@ -13,7 +13,7 @@ const diffFile = async (oldFile: string, newFile: string, outputFile: string) =>
   const added = newContent.filter(x => !oldContent.includes(x))
   const removed = oldContent.filter(x => !newContent.includes(x));
   const content = `// new lines (count = ${added.length}):\n\n${added.join('\n')}\n\n// old lines (count = ${removed.length})\n\n${removed.join('\n')}`
-  fs.writeFileSync(outputFile, content, { encoding: 'utf-8', mode: 'a' });
+  fs.writeFileSync(outputFile, content, { encoding: 'utf-8' });
 };
 
 const performDiffForProduct = async (oldRev: string, newRev: string, product: string) => {
