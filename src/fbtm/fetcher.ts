@@ -9,7 +9,7 @@ const fetchRevProduct = async (rev: string, dir: string, product: string) => {
   const archiveFile = `./working/archive/${product}.zip`;
   let fd = fs.openSync(archiveFile, 'w');
   fs.closeSync(fd);
-  let exit = await exec.exec('curl', [fbUrl, '-o', archiveFile]);
+  let exit = await exec.exec('curl', [fbUrl, '-L', '-o', archiveFile]);
   if (exit !== 0) {
     return false;
   }

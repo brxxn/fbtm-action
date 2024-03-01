@@ -779,7 +779,7 @@ const fetchRevProduct = (rev, dir, product) => __awaiter(void 0, void 0, void 0,
     const archiveFile = `./working/archive/${product}.zip`;
     let fd = fs.openSync(archiveFile, 'w');
     fs.closeSync(fd);
-    let exit = yield exec.exec('curl', [fbUrl, '-o', archiveFile]);
+    let exit = yield exec.exec('curl', [fbUrl, '-L', '-o', archiveFile]);
     if (exit !== 0) {
         return false;
     }
