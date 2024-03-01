@@ -11,6 +11,7 @@ const performSearchForProduct = async (rev: string, path: string, product: strin
       continue;
     }
     const outputFile = `./searches/${product}/${rev}/${searchType.filename}`;
+    console.log(`Searching ${path}/${product}/ to ${outputFile}`);
     promises.push(searchType.performSearch(`${path}/${product}/`, outputFile));
   }
   return (await Promise.all(promises)).every(x => x);

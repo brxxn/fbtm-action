@@ -1060,6 +1060,7 @@ const performSearchForProduct = (rev, path, product) => __awaiter(void 0, void 0
             continue;
         }
         const outputFile = `./searches/${product}/${rev}/${searchType.filename}`;
+        console.log(`Searching ${path}/${product}/ to ${outputFile}`);
         promises.push(searchType.performSearch(`${path}/${product}/`, outputFile));
     }
     return (yield Promise.all(promises)).every(x => x);
