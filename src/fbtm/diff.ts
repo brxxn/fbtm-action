@@ -17,8 +17,8 @@ const diffFile = async (oldFile: string, newFile: string, outputFile: string) =>
 };
 
 const performDiffForProduct = async (oldRev: string, newRev: string, product: string) => {
-  const oldSearchRoot = `./search/${product}/${oldRev}/`;
-  const newSearchRoot = `./search/${product}/${newRev}/`;
+  const oldSearchRoot = `./searches/${product}/${oldRev}/`;
+  const newSearchRoot = `./searches/${product}/${newRev}/`;
   const outputRoot = `./diff/${product}/${oldRev}-${newRev}/`;
   await io.mkdirP(outputRoot);
   let promises: Promise<void>[] = [];

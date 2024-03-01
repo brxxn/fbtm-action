@@ -13,7 +13,7 @@ const jsRoutePathSearch: SearchType = {
   shouldDiff: true,
   performSearch: async (targetDirectory, outputFile) => {
     const outputStream = fs.createWriteStream(outputFile, {flags: 'a'});
-    const result = await exec.exec('grep', ['-Rh', '"jsRouteBuilder\\")(\\""', targetDirectory], {
+    const result = await exec.exec('grep', ['-Rh', 'jsRouteBuilder")("', targetDirectory], {
       outStream: outputStream
     });
     return result === 0;

@@ -67,7 +67,7 @@ const approveCommand: Command = {
       .map(x => x.split(': '))
       .filter(x => x.length === 2 && x[0] === 'fb-rev');
     if (bodyParts.length > 0) {
-      if ((rev !== '' && bodyParts[0][1] !== rev) || bodyParts.length <= 2) {
+      if ((rev !== '' && bodyParts[0][1] !== rev) || bodyParts.length >= 2) {
         await replyWithTemplate(ISSUE_REPLY_TEMPLATES.MULTIPLE_REVS, {});
         return;
       }

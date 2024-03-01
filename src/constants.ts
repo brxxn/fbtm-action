@@ -131,5 +131,5 @@ export const ISSUE_REPLY_TEMPLATES = {
   }
 };
 
-export const TEMPLATE_FOOTER = '<sup><sub>in response to @{{ username }} (github user ID: `{{ user_id }})` | ' +
+export const TEMPLATE_FOOTER = '<sup><sub>in response to @{{ username }} (github user ID: {{ user_id }} | ' +
   'run: [{{ run_id }} ({{ run_number }})]({{ action_log_url }}))</sub></sup>';

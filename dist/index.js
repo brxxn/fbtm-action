@@ -237,7 +237,7 @@ const approveCommand = {
             .map(x => x.split(': '))
             .filter(x => x.length === 2 && x[0] === 'fb-rev');
         if (bodyParts.length > 0) {
-            if ((rev !== '' && bodyParts[0][1] !== rev) || bodyParts.length <= 2) {
+            if ((rev !== '' && bodyParts[0][1] !== rev) || bodyParts.length >= 2) {
                 yield replyWithTemplate(constants_1.ISSUE_REPLY_TEMPLATES.MULTIPLE_REVS, {});
                 return;
             }
@@ -649,7 +649,7 @@ exports.ISSUE_REPLY_TEMPLATES = {
         body: 'successfully removed @{{ removed_user }} as an approved user!'
     }
 };
-exports.TEMPLATE_FOOTER = '<sup><sub>in response to @{{ username }} (github user ID: `{{ user_id }})` | ' +
+exports.TEMPLATE_FOOTER = '<sup><sub>in response to @{{ username }} (github user ID: {{ user_id }} | ' +
     'run: [{{ run_id }} ({{ run_number }})]({{ action_log_url }}))</sub></sup>';
 //# sourceMappingURL=constants.js.map
 
@@ -712,8 +712,8 @@ const diffFile = (oldFile, newFile, outputFile) => __awaiter(void 0, void 0, voi
     fs.writeFileSync(outputFile, content, { encoding: 'utf-8', mode: 'a' });
 });
 const performDiffForProduct = (oldRev, newRev, product) => __awaiter(void 0, void 0, void 0, function* () {
-    const oldSearchRoot = `./search/${product}/${oldRev}/`;
-    const newSearchRoot = `./search/${product}/${newRev}/`;
+    const oldSearchRoot = `./searches/${product}/${oldRev}/`;
+    const newSearchRoot = `./searches/${product}/${newRev}/`;
     const outputRoot = `./diff/${product}/${oldRev}-${newRev}/`;
     yield io.mkdirP(outputRoot);
     let promises = [];
@@ -880,7 +880,7 @@ const jsRoutePathSearch = {
     shouldDiff: true,
     performSearch: (targetDirectory, outputFile) => __awaiter(void 0, void 0, void 0, function* () {
         const outputStream = fs.createWriteStream(outputFile, { flags: 'a' });
-        const result = yield exec.exec('grep', ['-Rh', '"jsRouteBuilder\\")(\\""', targetDirectory], {
+        const result = yield exec.exec('grep', ['-Rh', 'jsRouteBuilder")("', targetDirectory], {
             outStream: outputStream
         });
         return result === 0;
@@ -1265,7 +1265,7 @@ const renderReplyTemplate = (template, variables) => {
         variables['username'] = payload.comment.user.login;
     }
     // render actual template
-    let response = `${template.emoji} ${template.title}\n\n${template.body}\n\n${constants_1.TEMPLATE_FOOTER}`;
+    let response = `${template.emoji} **${template.title}**\n\n${template.body}\n\n${constants_1.TEMPLATE_FOOTER}`;
     for (const variable in variables) {
         response = response.replaceAll(`{{ ${variable} }}`, variables[variable]);
     }

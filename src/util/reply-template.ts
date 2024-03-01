@@ -18,7 +18,7 @@ export const renderReplyTemplate = (template: IssueReplyTemplate, variables: {[k
   }
 
   // render actual template
-  let response = `${template.emoji} ${template.title}\n\n${template.body}\n\n${TEMPLATE_FOOTER}`;
+  let response = `${template.emoji} **${template.title}**\n\n${template.body}\n\n${TEMPLATE_FOOTER}`;
 
   for (const variable in variables) {
     response = response.replaceAll(`{{ ${variable} }}`, variables[variable]);
