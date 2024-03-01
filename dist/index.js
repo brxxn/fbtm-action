@@ -262,7 +262,9 @@ const approveCommand = {
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
             issue_number: github.context.issue.number,
-            body: (0, reply_template_1.renderReplyTemplate)(constants_1.ISSUE_REPLY_TEMPLATES.PROCESSING_REV, {})
+            body: (0, reply_template_1.renderReplyTemplate)(constants_1.ISSUE_REPLY_TEMPLATES.PROCESSING_REV, {
+                rev
+            })
         });
         const updateProcessing = (template, variables) => __awaiter(void 0, void 0, void 0, function* () {
             const body = (0, reply_template_1.renderReplyTemplate)(template, variables);
@@ -561,7 +563,7 @@ exports.ISSUE_REPLY_TEMPLATES = {
     INTERNAL_SERVER_ERROR: {
         emoji: exports.EMOJIS.ERROR,
         title: 'internal server error',
-        body: 'an unknown error occurred while executing this command! see the [action logs]({{ action_log_url }} for more details.'
+        body: 'an unknown error occurred while executing this command! see the [action logs]({{ action_log_url }}) for more details.'
     },
     REV_NOT_FOUND: {
         emoji: exports.EMOJIS.BAD_REQUEST,
@@ -769,16 +771,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const exec = __importStar(__nccwpck_require__(1514));
 const io = __importStar(__nccwpck_require__(7436));
+const fs = __importStar(__nccwpck_require__(7147));
 const constants_1 = __nccwpck_require__(5105);
 const fetchRevProduct = (rev, dir, product) => __awaiter(void 0, void 0, void 0, function* () {
     const fbUrl = `https://www.facebook.com/btarchive/${encodeURIComponent(rev)}/${product}`;
     yield io.mkdirP('./working/archives/');
-    let exit = yield exec.exec('curl', [fbUrl, '-o', `./working/archive/${product}.zip`]);
+    const archiveFile = `./working/archive/${product}.zip`;
+    let fd = fs.openSync(archiveFile, 'w');
+    fs.closeSync(fd);
+    let exit = yield exec.exec('curl', [fbUrl, '-o', archiveFile]);
     if (exit !== 0) {
         return false;
     }
     yield io.mkdirP(`${dir}/${product}/`);
-    exit = yield exec.exec('tar', ['-xzf', `./working/archive/${product}.zip`, `${dir}/${product}/`]);
+    exit = yield exec.exec('tar', ['-xzf', archiveFile, `${dir}/${product}/`]);
     return exit === 0;
 });
 const fetchRev = (rev, dir) => __awaiter(void 0, void 0, void 0, function* () {
@@ -1232,7 +1238,7 @@ const constants_1 = __nccwpck_require__(5105);
 const github = __importStar(__nccwpck_require__(5438));
 const renderReplyTemplate = (template, variables) => {
     // prefilling common variables
-    variables['action_log_url'] = `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runNumber}`;
+    variables['action_log_url'] = `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runId}`;
     variables['run_id'] = github.context.runId.toString();
     variables['run_number'] = github.context.runNumber.toString();
     // TODO: handle other types

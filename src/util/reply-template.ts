@@ -6,7 +6,7 @@ import { IssueCommentCreatedEvent } from "@octokit/webhooks-definitions/schema";
 
 export const renderReplyTemplate = (template: IssueReplyTemplate, variables: {[key: string]: string}) => {
   // prefilling common variables
-  variables['action_log_url'] = `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runNumber}`;
+  variables['action_log_url'] = `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runId}`;
   variables['run_id'] = github.context.runId.toString();
   variables['run_number'] = github.context.runNumber.toString();
 

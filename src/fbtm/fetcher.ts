@@ -1,16 +1,20 @@
 import * as exec from '@actions/exec';
 import * as io from '@actions/io';
+import * as fs from 'fs';
 import { SUPPORTED_PRODUCTS } from '../constants';
 
 const fetchRevProduct = async (rev: string, dir: string, product: string) => {
   const fbUrl = `https://www.facebook.com/btarchive/${encodeURIComponent(rev)}/${product}`;
   await io.mkdirP('./working/archives/');
-  let exit = await exec.exec('curl', [fbUrl, '-o', `./working/archive/${product}.zip`]);
+  const archiveFile = `./working/archive/${product}.zip`;
+  let fd = fs.openSync(archiveFile, 'w');
+  fs.closeSync(fd);
+  let exit = await exec.exec('curl', [fbUrl, '-o', archiveFile]);
   if (exit !== 0) {
     return false;
   }
   await io.mkdirP(`${dir}/${product}/`);
-  exit = await exec.exec('tar', ['-xzf', `./working/archive/${product}.zip`, `${dir}/${product}/`]);
+  exit = await exec.exec('tar', ['-xzf', archiveFile, `${dir}/${product}/`]);
   return exit === 0;
 }
 

@@ -52,7 +52,7 @@ export const ISSUE_REPLY_TEMPLATES = {
   INTERNAL_SERVER_ERROR: {
     emoji: EMOJIS.ERROR,
     title: 'internal server error',
-    body: 'an unknown error occurred while executing this command! see the [action logs]({{ action_log_url }} for more details.'
+    body: 'an unknown error occurred while executing this command! see the [action logs]({{ action_log_url }}) for more details.'
   },
   REV_NOT_FOUND: {
     emoji: EMOJIS.BAD_REQUEST,

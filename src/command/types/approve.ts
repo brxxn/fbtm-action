@@ -95,7 +95,9 @@ const approveCommand: Command = {
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
       issue_number: github.context.issue.number,
-      body: renderReplyTemplate(ISSUE_REPLY_TEMPLATES.PROCESSING_REV, {})
+      body: renderReplyTemplate(ISSUE_REPLY_TEMPLATES.PROCESSING_REV, {
+        rev
+      })
     });
 
     const updateProcessing = async (template: IssueReplyTemplate, variables: {[key: string]: string}) => {
