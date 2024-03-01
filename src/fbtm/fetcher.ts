@@ -5,7 +5,7 @@ import { SUPPORTED_PRODUCTS } from '../constants';
 
 const fetchRevProduct = async (rev: string, dir: string, product: string) => {
   const fbUrl = `https://www.facebook.com/btarchive/${encodeURIComponent(rev)}/${product}`;
-  await io.mkdirP('./working/archives/');
+  await io.mkdirP('./working/archive/');
   const archiveFile = `./working/archive/${product}.zip`;
   let fd = fs.openSync(archiveFile, 'w');
   fs.closeSync(fd);

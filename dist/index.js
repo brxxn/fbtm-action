@@ -775,7 +775,7 @@ const fs = __importStar(__nccwpck_require__(7147));
 const constants_1 = __nccwpck_require__(5105);
 const fetchRevProduct = (rev, dir, product) => __awaiter(void 0, void 0, void 0, function* () {
     const fbUrl = `https://www.facebook.com/btarchive/${encodeURIComponent(rev)}/${product}`;
-    yield io.mkdirP('./working/archives/');
+    yield io.mkdirP('./working/archive/');
     const archiveFile = `./working/archive/${product}.zip`;
     let fd = fs.openSync(archiveFile, 'w');
     fs.closeSync(fd);
