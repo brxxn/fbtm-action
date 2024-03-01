@@ -1,4 +1,4 @@
-import github from '@actions/github';
+import * as github from '@actions/github';
 import { handleIssueComment } from './handler/issue-comment';
 
 export const runAction = async () => {

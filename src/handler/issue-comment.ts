@@ -1,4 +1,4 @@
-import github from '@actions/github';
+import * as github from '@actions/github';
 import { IssueCommentCreatedEvent } from '@octokit/webhooks-definitions/schema';
 import { handleCommand } from '../command/handler';
 

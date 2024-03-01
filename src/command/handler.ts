@@ -1,10 +1,10 @@
 import { PermissionLevel } from "../types";
 import CommandRegistry from "./registry";
 
-import core from '@actions/core';
-import github from '@actions/github';
+import * as core from '@actions/core';
+import * as github from '@actions/github';
 import { IssueCommentCreatedEvent, AuthorAssociation } from '@octokit/webhooks-definitions/schema';
-import fs from 'fs';
+import * as fs from 'fs';
 import { ISSUE_REPLY_TEMPLATES } from "../constants";
 import { renderReplyTemplate } from "../util/reply-template";
 

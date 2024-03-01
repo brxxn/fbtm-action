@@ -1,6 +1,6 @@
 import { SearchType } from "../../../types";
-import exec from '@actions/exec';
-import fs from 'fs';
+import * as exec from '@actions/exec';
+import * as fs from 'fs';
 
 const jsRoutePathSearch: SearchType = {
   filename: 'js-route-builder.js',

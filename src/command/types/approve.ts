@@ -1,12 +1,12 @@
 import { Command, IssueReplyTemplate, PermissionLevel } from "../../types";
 import { renderReplyTemplate } from "../../util/reply-template";
 import { ISSUE_REPLY_TEMPLATES, MAINTAINER_ONLY_FLAGS } from "../../constants";
-import core from '@actions/core';
-import exec from '@actions/exec';
-import github from '@actions/github';
-import io from '@actions/io';
+import * as core from '@actions/core';
+import * as exec from '@actions/exec';
+import * as github from '@actions/github';
+import * as io from '@actions/io';
 import { IssueCommentEvent } from "@octokit/webhooks-definitions/schema";
-import fs from 'fs';
+import * as fs from 'fs';
 import fetchRev from "../../fbtm/fetcher";
 import performSearch from "../../fbtm/searcher";
 import performDiff from "../../fbtm/diff";

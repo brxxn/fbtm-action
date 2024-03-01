@@ -1,6 +1,6 @@
 import { SUPPORTED_PRODUCTS } from "../constants";
 import searchRegistry from "./search/registry";
-import io from '@actions/io';
+import * as io from '@actions/io';
 
 const performSearchForProduct = async (rev: string, path: string, product: string) => {
   await io.mkdirP(`./searches/${product}/${rev}/`);

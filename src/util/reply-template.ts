@@ -1,6 +1,6 @@
 import { TEMPLATE_FOOTER } from "../constants";
 import { IssueReplyTemplate } from "../types";
-import github from '@actions/github';
+import * as github from '@actions/github';
 import { IssueCommentCreatedEvent } from "@octokit/webhooks-definitions/schema";
 
 

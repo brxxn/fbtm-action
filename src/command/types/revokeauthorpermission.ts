@@ -1,11 +1,11 @@
 import { Command, PermissionLevel } from "../../types";
 import { renderReplyTemplate } from "../../util/reply-template";
 import { ISSUE_REPLY_TEMPLATES } from "../../constants";
-import core from '@actions/core';
-import exec from '@actions/exec';
-import github from '@actions/github';
+import * as core from '@actions/core';
+import * as exec from '@actions/exec';
+import * as github from '@actions/github';
 import { IssueCommentEvent } from "@octokit/webhooks-definitions/schema";
-import fs from 'fs';
+import * as fs from 'fs';
 
 const revokeAuthorPermissionCommand: Command = {
   name: 'revokeauthorpermission',

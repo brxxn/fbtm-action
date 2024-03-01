@@ -6,6 +6,15 @@
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -18,7 +27,7 @@ const github_1 = __importDefault(__nccwpck_require__(5438));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 const constants_1 = __nccwpck_require__(5105);
 const reply_template_1 = __nccwpck_require__(3125);
-const handleCommand = async (commandText) => {
+const handleCommand = (commandText) => __awaiter(void 0, void 0, void 0, function* () {
     const commandName = commandText.trim().split(/\s+/)[0].replace('/', '').toLowerCase();
     const githubToken = core_1.default.getInput('github-token', { required: true });
     const octokit = github_1.default.getOctokit(githubToken);
@@ -49,7 +58,7 @@ const handleCommand = async (commandText) => {
                         constants_1.ISSUE_REPLY_TEMPLATES.ALLOWED_USER_REQUIRED :
                         constants_1.ISSUE_REPLY_TEMPLATES.PERMISSION_REQUIRED);
                     const replyBody = (0, reply_template_1.renderReplyTemplate)(replyTemplate, {});
-                    await octokit.rest.issues.createComment({
+                    yield octokit.rest.issues.createComment({
                         owner: github_1.default.context.repo.owner,
                         repo: github_1.default.context.repo.repo,
                         issue_number: github_1.default.context.issue.number,
@@ -58,7 +67,7 @@ const handleCommand = async (commandText) => {
                     return;
                 }
                 // run the command
-                await registeredCommand.run(commandText, userPermissionLevel);
+                yield registeredCommand.run(commandText, userPermissionLevel);
                 break;
             }
         }
@@ -66,7 +75,7 @@ const handleCommand = async (commandText) => {
     catch (exception) {
         // reply with internal server error
         const replyBody = (0, reply_template_1.renderReplyTemplate)(constants_1.ISSUE_REPLY_TEMPLATES.INTERNAL_SERVER_ERROR, {});
-        await octokit.rest.issues.createComment({
+        yield octokit.rest.issues.createComment({
             owner: github_1.default.context.repo.owner,
             repo: github_1.default.context.repo.repo,
             issue_number: github_1.default.context.issue.number,
@@ -75,9 +84,9 @@ const handleCommand = async (commandText) => {
         // rethrow the exception so it is visible in logs
         throw exception;
     }
-};
+});
 exports.handleCommand = handleCommand;
-
+//# sourceMappingURL=handler.js.map
 
 /***/ }),
 
@@ -99,7 +108,7 @@ const CommandRegistry = [
     revokeauthorpermission_1.default
 ];
 exports["default"] = CommandRegistry;
-
+//# sourceMappingURL=registry.js.map
 
 /***/ }),
 
@@ -108,6 +117,15 @@ exports["default"] = CommandRegistry;
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -126,18 +144,18 @@ const diff_1 = __importDefault(__nccwpck_require__(2204));
 const approveCommand = {
     name: 'approve',
     requiredPermissionLevel: types_1.PermissionLevel.ALLOWED_USER,
-    run: async (command, userPermissionLevel) => {
+    run: (command, userPermissionLevel) => __awaiter(void 0, void 0, void 0, function* () {
         const githubToken = core_1.default.getInput('github-token', { required: true });
         const octokit = github_1.default.getOctokit(githubToken);
-        const replyWithTemplate = async (template, variables) => {
+        const replyWithTemplate = (template, variables) => __awaiter(void 0, void 0, void 0, function* () {
             const body = (0, reply_template_1.renderReplyTemplate)(template, variables);
-            await octokit.rest.issues.createComment({
+            yield octokit.rest.issues.createComment({
                 owner: github_1.default.context.repo.owner,
                 repo: github_1.default.context.repo.repo,
                 issue_number: github_1.default.context.issue.number,
                 body
             });
-        };
+        });
         // we will just check flags with flags.include(flag), not registering them
         // in some other weird convoluted way because i don't feel like it.
         // only downside is we don't get to list flags
@@ -146,7 +164,7 @@ const approveCommand = {
         if (userPermissionLevel > types_1.PermissionLevel.MAINTAINER) {
             for (const maintainerOnlyFlag of constants_1.MAINTAINER_ONLY_FLAGS) {
                 if (flags.includes(maintainerOnlyFlag)) {
-                    await replyWithTemplate(constants_1.ISSUE_REPLY_TEMPLATES.FLAG_REQUIRES_MAINTAINER, {
+                    yield replyWithTemplate(constants_1.ISSUE_REPLY_TEMPLATES.FLAG_REQUIRES_MAINTAINER, {
                         flag: maintainerOnlyFlag
                     });
                     return;
@@ -162,7 +180,7 @@ const approveCommand = {
             if (titleParts[partIndex] === 'fb-rev:' && parseInt(partIndex) + 1 !== titleParts.length) {
                 if (rev !== '') {
                     // throw duplicate error
-                    await replyWithTemplate(constants_1.ISSUE_REPLY_TEMPLATES.MULTIPLE_REVS, {});
+                    yield replyWithTemplate(constants_1.ISSUE_REPLY_TEMPLATES.MULTIPLE_REVS, {});
                     return;
                 }
                 rev = titleParts[parseInt(partIndex) + 1];
@@ -174,91 +192,91 @@ const approveCommand = {
             .filter(x => x.length === 2 && x[0] === 'fb-rev');
         if (bodyParts.length > 0) {
             if (rev === '' || bodyParts.length <= 2) {
-                await replyWithTemplate(constants_1.ISSUE_REPLY_TEMPLATES.MULTIPLE_REVS, {});
+                yield replyWithTemplate(constants_1.ISSUE_REPLY_TEMPLATES.MULTIPLE_REVS, {});
                 return;
             }
             rev = bodyParts[0][1];
         }
         // make sure we have a rev and that it looks like a rev
         if (rev === '' || (!flags.includes('unsupported-skipvalidrevcheck') || !rev.match(/^[0-9]+$/))) {
-            await replyWithTemplate(constants_1.ISSUE_REPLY_TEMPLATES.REV_NOT_FOUND, {});
+            yield replyWithTemplate(constants_1.ISSUE_REPLY_TEMPLATES.REV_NOT_FOUND, {});
             return;
         }
         // look at current rev and make sure this is newer
         let currentRev = flags.includes('initialrev') ? 0 : parseInt(fs_1.default.readFileSync('./.current-rev', 'utf-8'));
         if (parseInt(rev) <= currentRev && !flags.includes('dangerously-process-old-rev') && !flags.includes('compare-to-current')) {
-            await replyWithTemplate(constants_1.ISSUE_REPLY_TEMPLATES.REV_TOO_OLD, {
+            yield replyWithTemplate(constants_1.ISSUE_REPLY_TEMPLATES.REV_TOO_OLD, {
                 rev,
                 current_rev: currentRev.toString()
             });
             return;
         }
         // create processing message
-        const processingMessage = await octokit.rest.issues.createComment({
+        const processingMessage = yield octokit.rest.issues.createComment({
             owner: github_1.default.context.repo.owner,
             repo: github_1.default.context.repo.repo,
             issue_number: github_1.default.context.issue.number,
             body: (0, reply_template_1.renderReplyTemplate)(constants_1.ISSUE_REPLY_TEMPLATES.PROCESSING_REV, {})
         });
-        const updateProcessing = async (template, variables) => {
+        const updateProcessing = (template, variables) => __awaiter(void 0, void 0, void 0, function* () {
             const body = (0, reply_template_1.renderReplyTemplate)(template, variables);
-            await octokit.rest.issues.updateComment({
+            yield octokit.rest.issues.updateComment({
                 owner: github_1.default.context.repo.owner,
                 repo: github_1.default.context.repo.repo,
                 comment_id: processingMessage.data.id,
                 body
             });
-        };
+        });
         const revDirectory = flags.includes('compare-to-current') ? './working/js/' : './current/';
         // clear out current if not comparing
         if (!flags.includes('compare-to-current')) {
-            await io_1.default.rmRF('./current/');
-            await io_1.default.mkdirP('./current/');
+            yield io_1.default.rmRF('./current/');
+            yield io_1.default.mkdirP('./current/');
         }
         // fetch the archive of the rev from facebook
-        const fetchResult = await (0, fetcher_1.default)(rev, revDirectory);
+        const fetchResult = yield (0, fetcher_1.default)(rev, revDirectory);
         if (!fetchResult) {
-            await updateProcessing(constants_1.ISSUE_REPLY_TEMPLATES.FAILED_TO_FETCH_REV, {});
+            yield updateProcessing(constants_1.ISSUE_REPLY_TEMPLATES.FAILED_TO_FETCH_REV, {});
             return;
         }
         // perform search for new archives
         if (!flags.includes('skip-search')) {
-            const searchResult = await (0, searcher_1.default)(rev, revDirectory);
+            const searchResult = yield (0, searcher_1.default)(rev, revDirectory);
             if (!searchResult && !flags.includes('ignore-search-error')) {
-                await updateProcessing(constants_1.ISSUE_REPLY_TEMPLATES.FAILED_TO_SEARCH_REV, {});
+                yield updateProcessing(constants_1.ISSUE_REPLY_TEMPLATES.FAILED_TO_SEARCH_REV, {});
                 return;
             }
         }
         // perform the diff
         if (!flags.includes('initialrev') && !flags.includes('skip-diff')) {
-            const diffResult = await (0, diff_1.default)(currentRev.toString(), rev);
+            const diffResult = yield (0, diff_1.default)(currentRev.toString(), rev);
             if (!diffResult && !flags.includes('ignore-failed-diff')) {
-                await updateProcessing(constants_1.ISSUE_REPLY_TEMPLATES.FAILED_TO_DIFF_REV, {});
+                yield updateProcessing(constants_1.ISSUE_REPLY_TEMPLATES.FAILED_TO_DIFF_REV, {});
                 return;
             }
         }
         // update the current rev file
         fs_1.default.writeFileSync(`./.current-rev`, rev, 'utf-8');
-        await exec_1.default.exec('git', ['config', 'user.name', 'fbtm-bot']);
-        await exec_1.default.exec('git', ['config', 'user.email', '<>']);
-        await exec_1.default.exec('git', ['add', '.']);
-        await exec_1.default.exec('git', ['commit', '-m', `process rev ${rev} (#${github_1.default.context.issue.number})`]);
-        await exec_1.default.exec('git', ['push', 'origin', 'main']);
+        yield exec_1.default.exec('git', ['config', 'user.name', 'fbtm-bot']);
+        yield exec_1.default.exec('git', ['config', 'user.email', '<>']);
+        yield exec_1.default.exec('git', ['add', '.']);
+        yield exec_1.default.exec('git', ['commit', '-m', `process rev ${rev} (#${github_1.default.context.issue.number})`]);
+        yield exec_1.default.exec('git', ['push', 'origin', 'main']);
         // fetch the ref
-        const updatedRepo = await octokit.rest.repos.getBranch({
+        const updatedRepo = yield octokit.rest.repos.getBranch({
             owner: github_1.default.context.repo.owner,
             repo: github_1.default.context.repo.repo,
             branch: 'main'
         });
         const updatedRef = updatedRepo.data.commit.sha;
         // finally, update our message.
-        await updateProcessing(constants_1.ISSUE_REPLY_TEMPLATES.REV_PROCESSED, {
+        yield updateProcessing(constants_1.ISSUE_REPLY_TEMPLATES.REV_PROCESSED, {
             ref: updatedRef
         });
-    }
+    })
 };
 exports["default"] = approveCommand;
-
+//# sourceMappingURL=approve.js.map
 
 /***/ }),
 
@@ -267,6 +285,15 @@ exports["default"] = approveCommand;
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -281,7 +308,7 @@ const fs_1 = __importDefault(__nccwpck_require__(7147));
 const grantAuthorPermissionCommand = {
     name: 'grantauthorpermission',
     requiredPermissionLevel: types_1.PermissionLevel.MAINTAINER,
-    run: async (command, userPermissionLevel) => {
+    run: (command, userPermissionLevel) => __awaiter(void 0, void 0, void 0, function* () {
         const githubToken = core_1.default.getInput('github-token', { required: true });
         const octokit = github_1.default.getOctokit(githubToken);
         // read allowed users and add the issue author to it
@@ -292,7 +319,7 @@ const grantAuthorPermissionCommand = {
         const payload = github_1.default.context.payload;
         const addingUserId = payload.comment.user.id.toString();
         if (allowedUsers.split('\n').includes(addingUserId)) {
-            await octokit.rest.issues.createComment({
+            yield octokit.rest.issues.createComment({
                 owner: github_1.default.context.repo.owner,
                 repo: github_1.default.context.repo.repo,
                 issue_number: github_1.default.context.issue.number,
@@ -302,12 +329,12 @@ const grantAuthorPermissionCommand = {
         }
         allowedUsers += `\n${addingUserId}`;
         fs_1.default.writeFileSync('./.allowed-users', allowedUsers, 'utf-8');
-        await exec_1.default.exec('git', ['config', 'user.name', 'fbtm-bot']);
-        await exec_1.default.exec('git', ['config', 'user.email', '<>']);
-        await exec_1.default.exec('git', ['add', '.']);
-        await exec_1.default.exec('git', ['commit', '-m', 'add new allowed user via command']);
-        await exec_1.default.exec('git', ['push', 'origin', 'main']);
-        await octokit.rest.issues.createComment({
+        yield exec_1.default.exec('git', ['config', 'user.name', 'fbtm-bot']);
+        yield exec_1.default.exec('git', ['config', 'user.email', '<>']);
+        yield exec_1.default.exec('git', ['add', '.']);
+        yield exec_1.default.exec('git', ['commit', '-m', 'add new allowed user via command']);
+        yield exec_1.default.exec('git', ['push', 'origin', 'main']);
+        yield octokit.rest.issues.createComment({
             owner: github_1.default.context.repo.owner,
             repo: github_1.default.context.repo.repo,
             issue_number: github_1.default.context.issue.number,
@@ -315,10 +342,10 @@ const grantAuthorPermissionCommand = {
                 'approved_user': payload.comment.user.login
             })
         });
-    }
+    })
 };
 exports["default"] = grantAuthorPermissionCommand;
-
+//# sourceMappingURL=grantauthorpermission.js.map
 
 /***/ }),
 
@@ -327,6 +354,15 @@ exports["default"] = grantAuthorPermissionCommand;
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -341,7 +377,7 @@ const fs_1 = __importDefault(__nccwpck_require__(7147));
 const revokeAuthorPermissionCommand = {
     name: 'revokeauthorpermission',
     requiredPermissionLevel: types_1.PermissionLevel.MAINTAINER,
-    run: async (command, userPermissionLevel) => {
+    run: (command, userPermissionLevel) => __awaiter(void 0, void 0, void 0, function* () {
         const githubToken = core_1.default.getInput('github-token', { required: true });
         const octokit = github_1.default.getOctokit(githubToken);
         // read allowed users and add the issue author to it
@@ -353,7 +389,7 @@ const revokeAuthorPermissionCommand = {
         const removedUserId = payload.comment.user.id.toString();
         let allowedUserIds = allowedUsers.split('\n');
         if (!allowedUserIds.includes(removedUserId)) {
-            await octokit.rest.issues.createComment({
+            yield octokit.rest.issues.createComment({
                 owner: github_1.default.context.repo.owner,
                 repo: github_1.default.context.repo.repo,
                 issue_number: github_1.default.context.issue.number,
@@ -363,12 +399,12 @@ const revokeAuthorPermissionCommand = {
         }
         allowedUserIds = allowedUserIds.filter(x => x != removedUserId);
         fs_1.default.writeFileSync('./.allowed-users', allowedUserIds.join('\n'), 'utf-8');
-        await exec_1.default.exec('git', ['config', 'user.name', 'fbtm-bot']);
-        await exec_1.default.exec('git', ['config', 'user.email', '<>']);
-        await exec_1.default.exec('git', ['add', '.']);
-        await exec_1.default.exec('git', ['commit', '-m', 'remove allowed user']);
-        await exec_1.default.exec('git', ['push', 'origin', 'main']);
-        await octokit.rest.issues.createComment({
+        yield exec_1.default.exec('git', ['config', 'user.name', 'fbtm-bot']);
+        yield exec_1.default.exec('git', ['config', 'user.email', '<>']);
+        yield exec_1.default.exec('git', ['add', '.']);
+        yield exec_1.default.exec('git', ['commit', '-m', 'remove allowed user']);
+        yield exec_1.default.exec('git', ['push', 'origin', 'main']);
+        yield octokit.rest.issues.createComment({
             owner: github_1.default.context.repo.owner,
             repo: github_1.default.context.repo.repo,
             issue_number: github_1.default.context.issue.number,
@@ -376,10 +412,10 @@ const revokeAuthorPermissionCommand = {
                 'removed_user': payload.comment.user.login
             })
         });
-    }
+    })
 };
 exports["default"] = revokeAuthorPermissionCommand;
-
+//# sourceMappingURL=revokeauthorpermission.js.map
 
 /***/ }),
 
@@ -519,7 +555,7 @@ exports.ISSUE_REPLY_TEMPLATES = {
 };
 exports.TEMPLATE_FOOTER = '<sup><sub>in response to @{{ username }} (github user ID: `{{ user_id }})` | ' +
     'run: [{{ run_id }} ({{ run_number }})]({{ action_log_url }}))</sub></sup>';
-
+//# sourceMappingURL=constants.js.map
 
 /***/ }),
 
@@ -528,6 +564,15 @@ exports.TEMPLATE_FOOTER = '<sup><sub>in response to @{{ username }} (github user
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -536,7 +581,7 @@ const io_1 = __importDefault(__nccwpck_require__(7436));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 const registry_1 = __importDefault(__nccwpck_require__(6617));
 const constants_1 = __nccwpck_require__(5105);
-const diffFile = async (oldFile, newFile, outputFile) => {
+const diffFile = (oldFile, newFile, outputFile) => __awaiter(void 0, void 0, void 0, function* () {
     // TODO: rework this!!
     // I believe it is incredibly inefficient in terms of both memory and CPU
     // and something better can definitely be done here.
@@ -546,12 +591,12 @@ const diffFile = async (oldFile, newFile, outputFile) => {
     const removed = oldContent.filter(x => !newContent.includes(x));
     const content = `// new lines (count = ${added.length}):\n\n${added.join('\n')}\n\n// old lines (count = ${removed.length})\n\n${removed.join('\n')}`;
     fs_1.default.writeFileSync(outputFile, content, { encoding: 'utf-8', mode: 'a' });
-};
-const performDiffForProduct = async (oldRev, newRev, product) => {
+});
+const performDiffForProduct = (oldRev, newRev, product) => __awaiter(void 0, void 0, void 0, function* () {
     const oldSearchRoot = `./search/${product}/${oldRev}/`;
     const newSearchRoot = `./search/${product}/${newRev}/`;
     const outputRoot = `./diff/${product}/${oldRev}-${newRev}/`;
-    await io_1.default.mkdirP(outputRoot);
+    yield io_1.default.mkdirP(outputRoot);
     let promises = [];
     for (const searchType of registry_1.default) {
         const oldSearchFile = oldSearchRoot + searchType.filename;
@@ -562,16 +607,16 @@ const performDiffForProduct = async (oldRev, newRev, product) => {
         promises.push(diffFile(oldSearchFile, newSearchFile, outputRoot + searchType.filename));
     }
     return true;
-};
-const performDiff = async (oldRev, newRev) => {
+});
+const performDiff = (oldRev, newRev) => __awaiter(void 0, void 0, void 0, function* () {
     let promises = [];
     for (const product of constants_1.SUPPORTED_PRODUCTS) {
         promises.push(performDiffForProduct(oldRev, newRev, product));
     }
-    return (await Promise.all(promises)).every(x => x);
-};
+    return (yield Promise.all(promises)).every(x => x);
+});
 exports["default"] = performDiff;
-
+//# sourceMappingURL=diff.js.map
 
 /***/ }),
 
@@ -580,6 +625,15 @@ exports["default"] = performDiff;
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -587,26 +641,26 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const exec_1 = __importDefault(__nccwpck_require__(1514));
 const io_1 = __importDefault(__nccwpck_require__(7436));
 const constants_1 = __nccwpck_require__(5105);
-const fetchRevProduct = async (rev, dir, product) => {
+const fetchRevProduct = (rev, dir, product) => __awaiter(void 0, void 0, void 0, function* () {
     const fbUrl = `https://www.facebook.com/btarchive/${encodeURIComponent(rev)}/${product}`;
-    await io_1.default.mkdirP('./working/archives/');
-    let exit = await exec_1.default.exec('curl', [fbUrl, '-o', `./working/archive/${product}.zip`]);
+    yield io_1.default.mkdirP('./working/archives/');
+    let exit = yield exec_1.default.exec('curl', [fbUrl, '-o', `./working/archive/${product}.zip`]);
     if (exit !== 0) {
         return false;
     }
-    await io_1.default.mkdirP(`${dir}/${product}/`);
-    exit = await exec_1.default.exec('tar', ['-xzf', `./working/archive/${product}.zip`, `${dir}/${product}/`]);
+    yield io_1.default.mkdirP(`${dir}/${product}/`);
+    exit = yield exec_1.default.exec('tar', ['-xzf', `./working/archive/${product}.zip`, `${dir}/${product}/`]);
     return exit === 0;
-};
-const fetchRev = async (rev, dir) => {
+});
+const fetchRev = (rev, dir) => __awaiter(void 0, void 0, void 0, function* () {
     let promises = [];
     for (const product of constants_1.SUPPORTED_PRODUCTS) {
         promises.push(fetchRevProduct(rev, dir, product));
     }
-    return (await Promise.all(promises)).every(x => x);
-};
+    return (yield Promise.all(promises)).every(x => x);
+});
 exports["default"] = fetchRev;
-
+//# sourceMappingURL=fetcher.js.map
 
 /***/ }),
 
@@ -628,7 +682,7 @@ const searchRegistry = [
     xcontroller_1.default
 ];
 exports["default"] = searchRegistry;
-
+//# sourceMappingURL=registry.js.map
 
 /***/ }),
 
@@ -637,6 +691,15 @@ exports["default"] = searchRegistry;
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -652,16 +715,16 @@ const jsRoutePathSearch = {
         'whatsapp' // i don't know if whatsapp uses this but might as well
     ],
     shouldDiff: true,
-    performSearch: async (targetDirectory, outputFile) => {
+    performSearch: (targetDirectory, outputFile) => __awaiter(void 0, void 0, void 0, function* () {
         const outputStream = fs_1.default.createWriteStream(outputFile, { flags: 'a' });
-        const result = await exec_1.default.exec('grep', ['-Rh', 'jsRouteBuilder")("', targetDirectory], {
+        const result = yield exec_1.default.exec('grep', ['-Rh', 'jsRouteBuilder")("', targetDirectory], {
             outStream: outputStream
         });
         return result === 0;
-    }
+    })
 };
 exports["default"] = jsRoutePathSearch;
-
+//# sourceMappingURL=jsRouteBuilder.js.map
 
 /***/ }),
 
@@ -670,6 +733,15 @@ exports["default"] = jsRoutePathSearch;
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -685,16 +757,16 @@ const relayOperationSearchType = {
         'whatsapp' // i don't know if whatsapp uses this but might as well
     ],
     shouldDiff: true,
-    performSearch: async (targetDirectory, outputFile) => {
+    performSearch: (targetDirectory, outputFile) => __awaiter(void 0, void 0, void 0, function* () {
         const outputStream = fs_1.default.createWriteStream(outputFile, { flags: 'a' });
-        const result = await exec_1.default.exec('grep', ['-Rh', 'RelayOperation",[', targetDirectory], {
+        const result = yield exec_1.default.exec('grep', ['-Rh', 'RelayOperation",[', targetDirectory], {
             outStream: outputStream
         });
         return result === 0;
-    }
+    })
 };
 exports["default"] = relayOperationSearchType;
-
+//# sourceMappingURL=relayOperation.js.map
 
 /***/ }),
 
@@ -703,6 +775,15 @@ exports["default"] = relayOperationSearchType;
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -718,16 +799,16 @@ const xControllerSearch = {
         'whatsapp' // i don't know if whatsapp uses this but might as well
     ],
     shouldDiff: true,
-    performSearch: async (targetDirectory, outputFile) => {
+    performSearch: (targetDirectory, outputFile) => __awaiter(void 0, void 0, void 0, function* () {
         const outputStream = fs_1.default.createWriteStream(outputFile, { flags: 'a' });
-        const result = await exec_1.default.exec('grep', ['-Rh', 'XController").cr', targetDirectory], {
+        const result = yield exec_1.default.exec('grep', ['-Rh', 'XController").cr', targetDirectory], {
             outStream: outputStream
         });
         return result === 0;
-    }
+    })
 };
 exports["default"] = xControllerSearch;
-
+//# sourceMappingURL=xcontroller.js.map
 
 /***/ }),
 
@@ -736,6 +817,15 @@ exports["default"] = xControllerSearch;
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -743,8 +833,8 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const constants_1 = __nccwpck_require__(5105);
 const registry_1 = __importDefault(__nccwpck_require__(6617));
 const io_1 = __importDefault(__nccwpck_require__(7436));
-const performSearchForProduct = async (rev, path, product) => {
-    await io_1.default.mkdirP(`./searches/${product}/${rev}/`);
+const performSearchForProduct = (rev, path, product) => __awaiter(void 0, void 0, void 0, function* () {
+    yield io_1.default.mkdirP(`./searches/${product}/${rev}/`);
     let promises = [];
     for (const searchType of registry_1.default) {
         if (!searchType.supportedPlatforms.includes(product)) {
@@ -753,17 +843,17 @@ const performSearchForProduct = async (rev, path, product) => {
         const outputFile = `./searches/${product}/${rev}/${searchType.filename}`;
         promises.push(searchType.performSearch(`${path}/${product}/`, outputFile));
     }
-    return (await Promise.all(promises)).every(x => x);
-};
-const performSearch = async (rev, path) => {
+    return (yield Promise.all(promises)).every(x => x);
+});
+const performSearch = (rev, path) => __awaiter(void 0, void 0, void 0, function* () {
     let promises = [];
     for (const product of constants_1.SUPPORTED_PRODUCTS) {
         promises.push(performSearchForProduct(rev, path, product));
     }
-    return (await Promise.all(promises)).every(x => x);
-};
+    return (yield Promise.all(promises)).every(x => x);
+});
 exports["default"] = performSearch;
-
+//# sourceMappingURL=searcher.js.map
 
 /***/ }),
 
@@ -772,6 +862,15 @@ exports["default"] = performSearch;
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -779,17 +878,17 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.handleIssueComment = void 0;
 const github_1 = __importDefault(__nccwpck_require__(5438));
 const handler_1 = __nccwpck_require__(7058);
-const handleIssueComment = async () => {
+const handleIssueComment = () => __awaiter(void 0, void 0, void 0, function* () {
     const payload = github_1.default.context.payload;
     // TODO: maybe custom prefix?
     if (!payload.comment.body.trim().startsWith('/')) {
         return;
     }
     // todo: surround with error check that creates an issue
-    await (0, handler_1.handleCommand)(payload.comment.body);
-};
+    yield (0, handler_1.handleCommand)(payload.comment.body);
+});
 exports.handleIssueComment = handleIssueComment;
-
+//# sourceMappingURL=issue-comment.js.map
 
 /***/ }),
 
@@ -798,21 +897,50 @@ exports.handleIssueComment = handleIssueComment;
 
 "use strict";
 
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.runAction = void 0;
-const github_1 = __importDefault(__nccwpck_require__(5438));
+const github = __importStar(__nccwpck_require__(5438));
 const issue_comment_1 = __nccwpck_require__(9107);
-const runAction = async () => {
-    if (github_1.default.context.eventName === 'issue_comment') {
-        await (0, issue_comment_1.handleIssueComment)();
+const runAction = () => __awaiter(void 0, void 0, void 0, function* () {
+    if (github.context.eventName === 'issue_comment') {
+        yield (0, issue_comment_1.handleIssueComment)();
     }
     // TODO: potentially support other event types (like commit)
-};
+});
 exports.runAction = runAction;
-
+//# sourceMappingURL=main.js.map
 
 /***/ }),
 
@@ -834,7 +962,7 @@ var PermissionLevel;
 ;
 ;
 ;
-
+//# sourceMappingURL=types.js.map
 
 /***/ }),
 
@@ -869,7 +997,7 @@ const renderReplyTemplate = (template, variables) => {
     return response;
 };
 exports.renderReplyTemplate = renderReplyTemplate;
-
+//# sourceMappingURL=reply-template.js.map
 
 /***/ }),
 
@@ -32992,7 +33120,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const main_1 = __nccwpck_require__(3109);
 // automatically runs our GitHub action
 (0, main_1.runAction)();
-
+//# sourceMappingURL=index.js.map
 })();
 
 module.exports = __webpack_exports__;

@@ -1,5 +1,5 @@
-import io from '@actions/io';
-import fs from 'fs';
+import * as io from '@actions/io';
+import * as fs from 'fs';
 import searchRegistry from './search/registry';
 import { SUPPORTED_PRODUCTS } from '../constants';
 

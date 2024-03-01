@@ -1,5 +1,5 @@
-import exec from '@actions/exec';
-import io from '@actions/io';
+import * as exec from '@actions/exec';
+import * as io from '@actions/io';
 import { SUPPORTED_PRODUCTS } from '../constants';
 
 const fetchRevProduct = async (rev: string, dir: string, product: string) => {
