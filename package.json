@@ -1,0 +1,30 @@
+{
+  "name": "fbtm-action",
+  "version": "1.0.0",
+  "description": "GitHub action to manage fbtm repo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"no tests provided\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brxxn/fbtm-action.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brxxn/fbtm-action/issues"
+  },
+  "homepage": "https://github.com/brxxn/fbtm-action#readme",
+  "devDependencies": {
+    "@octokit/webhooks-definitions": "^3.67.3",
+    "@types/node": "^20.11.24",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@actions/core": "^1.10.1",
+    "@actions/exec": "^1.1.1",
+    "@actions/github": "^6.0.0",
+    "@actions/io": "^1.1.3"
+  }
+}

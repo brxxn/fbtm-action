@@ -1,0 +1,10 @@
+name: fbtm-action
+description: an action used to automatically manage fbtm repositories
+author: brxxn
+inputs:
+  github-token:
+    description: GitHub token with write permissions to repo and issues
+    required: true
+runs:
+  using: node20
+  main: dist/index.js
