@@ -784,7 +784,7 @@ const fetchRevProduct = (rev, dir, product) => __awaiter(void 0, void 0, void 0,
         return false;
     }
     yield io.mkdirP(`${dir}/${product}/`);
-    exit = yield exec.exec('tar', ['-xzf', archiveFile, `${dir}/${product}/`]);
+    exit = yield exec.exec('tar', ['-xzf', archiveFile, '-C', `${dir}/${product}/`]);
     return exit === 0;
 });
 const fetchRev = (rev, dir) => __awaiter(void 0, void 0, void 0, function* () {
