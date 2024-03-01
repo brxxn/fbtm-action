@@ -6,6 +6,29 @@
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -22,22 +45,22 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.handleCommand = void 0;
 const types_1 = __nccwpck_require__(8164);
 const registry_1 = __importDefault(__nccwpck_require__(7429));
-const core_1 = __importDefault(__nccwpck_require__(2186));
-const github_1 = __importDefault(__nccwpck_require__(5438));
-const fs_1 = __importDefault(__nccwpck_require__(7147));
+const core = __importStar(__nccwpck_require__(2186));
+const github = __importStar(__nccwpck_require__(5438));
+const fs = __importStar(__nccwpck_require__(7147));
 const constants_1 = __nccwpck_require__(5105);
 const reply_template_1 = __nccwpck_require__(3125);
 const handleCommand = (commandText) => __awaiter(void 0, void 0, void 0, function* () {
     const commandName = commandText.trim().split(/\s+/)[0].replace('/', '').toLowerCase();
-    const githubToken = core_1.default.getInput('github-token', { required: true });
-    const octokit = github_1.default.getOctokit(githubToken);
+    const githubToken = core.getInput('github-token', { required: true });
+    const octokit = github.getOctokit(githubToken);
     try {
         for (const registeredCommand of registry_1.default) {
             if (registeredCommand.name === commandName) {
                 let userPermissionLevel = types_1.PermissionLevel.GUEST;
                 // handle user permissions for issue comment
-                if (github_1.default.context.eventName === 'issue_comment') {
-                    const payload = github_1.default.context.payload;
+                if (github.context.eventName === 'issue_comment') {
+                    const payload = github.context.payload;
                     if (payload.comment.author_association === 'OWNER') {
                         userPermissionLevel = types_1.PermissionLevel.OWNER;
                     }
@@ -46,7 +69,7 @@ const handleCommand = (commandText) => __awaiter(void 0, void 0, void 0, functio
                     }
                     else {
                         const authorId = payload.comment.user.id;
-                        const allowedUsers = fs_1.default.readFileSync('./.allowed-users', 'utf-8').split('\n');
+                        const allowedUsers = fs.readFileSync('./.allowed-users', 'utf-8').split('\n');
                         if (allowedUsers.includes(authorId.toString())) {
                             userPermissionLevel = types_1.PermissionLevel.ALLOWED_USER;
                         }
@@ -59,9 +82,9 @@ const handleCommand = (commandText) => __awaiter(void 0, void 0, void 0, functio
                         constants_1.ISSUE_REPLY_TEMPLATES.PERMISSION_REQUIRED);
                     const replyBody = (0, reply_template_1.renderReplyTemplate)(replyTemplate, {});
                     yield octokit.rest.issues.createComment({
-                        owner: github_1.default.context.repo.owner,
-                        repo: github_1.default.context.repo.repo,
-                        issue_number: github_1.default.context.issue.number,
+                        owner: github.context.repo.owner,
+                        repo: github.context.repo.repo,
+                        issue_number: github.context.issue.number,
                         body: replyBody
                     });
                     return;
@@ -76,9 +99,9 @@ const handleCommand = (commandText) => __awaiter(void 0, void 0, void 0, functio
         // reply with internal server error
         const replyBody = (0, reply_template_1.renderReplyTemplate)(constants_1.ISSUE_REPLY_TEMPLATES.INTERNAL_SERVER_ERROR, {});
         yield octokit.rest.issues.createComment({
-            owner: github_1.default.context.repo.owner,
-            repo: github_1.default.context.repo.repo,
-            issue_number: github_1.default.context.issue.number,
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+            issue_number: github.context.issue.number,
             body: replyBody
         });
         // rethrow the exception so it is visible in logs
@@ -117,6 +140,29 @@ exports["default"] = CommandRegistry;
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -133,11 +179,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const types_1 = __nccwpck_require__(8164);
 const reply_template_1 = __nccwpck_require__(3125);
 const constants_1 = __nccwpck_require__(5105);
-const core_1 = __importDefault(__nccwpck_require__(2186));
-const exec_1 = __importDefault(__nccwpck_require__(1514));
-const github_1 = __importDefault(__nccwpck_require__(5438));
-const io_1 = __importDefault(__nccwpck_require__(7436));
-const fs_1 = __importDefault(__nccwpck_require__(7147));
+const core = __importStar(__nccwpck_require__(2186));
+const exec = __importStar(__nccwpck_require__(1514));
+const github = __importStar(__nccwpck_require__(5438));
+const io = __importStar(__nccwpck_require__(7436));
+const fs = __importStar(__nccwpck_require__(7147));
 const fetcher_1 = __importDefault(__nccwpck_require__(5170));
 const searcher_1 = __importDefault(__nccwpck_require__(6045));
 const diff_1 = __importDefault(__nccwpck_require__(2204));
@@ -145,14 +191,14 @@ const approveCommand = {
     name: 'approve',
     requiredPermissionLevel: types_1.PermissionLevel.ALLOWED_USER,
     run: (command, userPermissionLevel) => __awaiter(void 0, void 0, void 0, function* () {
-        const githubToken = core_1.default.getInput('github-token', { required: true });
-        const octokit = github_1.default.getOctokit(githubToken);
+        const githubToken = core.getInput('github-token', { required: true });
+        const octokit = github.getOctokit(githubToken);
         const replyWithTemplate = (template, variables) => __awaiter(void 0, void 0, void 0, function* () {
             const body = (0, reply_template_1.renderReplyTemplate)(template, variables);
             yield octokit.rest.issues.createComment({
-                owner: github_1.default.context.repo.owner,
-                repo: github_1.default.context.repo.repo,
-                issue_number: github_1.default.context.issue.number,
+                owner: github.context.repo.owner,
+                repo: github.context.repo.repo,
+                issue_number: github.context.issue.number,
                 body
             });
         });
@@ -172,7 +218,7 @@ const approveCommand = {
             }
         }
         // find the rev in issue
-        const payload = github_1.default.context.payload;
+        const payload = github.context.payload;
         // find if fb-rev: in title
         const titleParts = payload.issue.title.split(' ');
         let rev = '';
@@ -203,7 +249,7 @@ const approveCommand = {
             return;
         }
         // look at current rev and make sure this is newer
-        let currentRev = flags.includes('initialrev') ? 0 : parseInt(fs_1.default.readFileSync('./.current-rev', 'utf-8'));
+        let currentRev = flags.includes('initialrev') ? 0 : parseInt(fs.readFileSync('./.current-rev', 'utf-8'));
         if (parseInt(rev) <= currentRev && !flags.includes('dangerously-process-old-rev') && !flags.includes('compare-to-current')) {
             yield replyWithTemplate(constants_1.ISSUE_REPLY_TEMPLATES.REV_TOO_OLD, {
                 rev,
@@ -213,16 +259,16 @@ const approveCommand = {
         }
         // create processing message
         const processingMessage = yield octokit.rest.issues.createComment({
-            owner: github_1.default.context.repo.owner,
-            repo: github_1.default.context.repo.repo,
-            issue_number: github_1.default.context.issue.number,
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+            issue_number: github.context.issue.number,
             body: (0, reply_template_1.renderReplyTemplate)(constants_1.ISSUE_REPLY_TEMPLATES.PROCESSING_REV, {})
         });
         const updateProcessing = (template, variables) => __awaiter(void 0, void 0, void 0, function* () {
             const body = (0, reply_template_1.renderReplyTemplate)(template, variables);
             yield octokit.rest.issues.updateComment({
-                owner: github_1.default.context.repo.owner,
-                repo: github_1.default.context.repo.repo,
+                owner: github.context.repo.owner,
+                repo: github.context.repo.repo,
                 comment_id: processingMessage.data.id,
                 body
             });
@@ -230,8 +276,8 @@ const approveCommand = {
         const revDirectory = flags.includes('compare-to-current') ? './working/js/' : './current/';
         // clear out current if not comparing
         if (!flags.includes('compare-to-current')) {
-            yield io_1.default.rmRF('./current/');
-            yield io_1.default.mkdirP('./current/');
+            yield io.rmRF('./current/');
+            yield io.mkdirP('./current/');
         }
         // fetch the archive of the rev from facebook
         const fetchResult = yield (0, fetcher_1.default)(rev, revDirectory);
@@ -256,16 +302,16 @@ const approveCommand = {
             }
         }
         // update the current rev file
-        fs_1.default.writeFileSync(`./.current-rev`, rev, 'utf-8');
-        yield exec_1.default.exec('git', ['config', 'user.name', 'fbtm-bot']);
-        yield exec_1.default.exec('git', ['config', 'user.email', '<>']);
-        yield exec_1.default.exec('git', ['add', '.']);
-        yield exec_1.default.exec('git', ['commit', '-m', `process rev ${rev} (#${github_1.default.context.issue.number})`]);
-        yield exec_1.default.exec('git', ['push', 'origin', 'main']);
+        fs.writeFileSync(`./.current-rev`, rev, 'utf-8');
+        yield exec.exec('git', ['config', 'user.name', 'fbtm-bot']);
+        yield exec.exec('git', ['config', 'user.email', '<>']);
+        yield exec.exec('git', ['add', '.']);
+        yield exec.exec('git', ['commit', '-m', `process rev ${rev} (#${github.context.issue.number})`]);
+        yield exec.exec('git', ['push', 'origin', 'main']);
         // fetch the ref
         const updatedRepo = yield octokit.rest.repos.getBranch({
-            owner: github_1.default.context.repo.owner,
-            repo: github_1.default.context.repo.repo,
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
             branch: 'main'
         });
         const updatedRef = updatedRepo.data.commit.sha;
@@ -285,6 +331,29 @@ exports["default"] = approveCommand;
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -294,50 +363,47 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const types_1 = __nccwpck_require__(8164);
 const reply_template_1 = __nccwpck_require__(3125);
 const constants_1 = __nccwpck_require__(5105);
-const core_1 = __importDefault(__nccwpck_require__(2186));
-const exec_1 = __importDefault(__nccwpck_require__(1514));
-const github_1 = __importDefault(__nccwpck_require__(5438));
-const fs_1 = __importDefault(__nccwpck_require__(7147));
+const core = __importStar(__nccwpck_require__(2186));
+const exec = __importStar(__nccwpck_require__(1514));
+const github = __importStar(__nccwpck_require__(5438));
+const fs = __importStar(__nccwpck_require__(7147));
 const grantAuthorPermissionCommand = {
     name: 'grantauthorpermission',
     requiredPermissionLevel: types_1.PermissionLevel.MAINTAINER,
     run: (command, userPermissionLevel) => __awaiter(void 0, void 0, void 0, function* () {
-        const githubToken = core_1.default.getInput('github-token', { required: true });
-        const octokit = github_1.default.getOctokit(githubToken);
+        const githubToken = core.getInput('github-token', { required: true });
+        const octokit = github.getOctokit(githubToken);
         // read allowed users and add the issue author to it
-        let allowedUsers = fs_1.default.readFileSync('./.allowed-users', 'utf-8');
-        if (github_1.default.context.eventName !== 'issue_comment') {
+        let allowedUsers = fs.readFileSync('./.allowed-users', 'utf-8');
+        if (github.context.eventName !== 'issue_comment') {
             return;
         }
-        const payload = github_1.default.context.payload;
+        const payload = github.context.payload;
         const addingUserId = payload.comment.user.id.toString();
         if (allowedUsers.split('\n').includes(addingUserId)) {
             yield octokit.rest.issues.createComment({
-                owner: github_1.default.context.repo.owner,
-                repo: github_1.default.context.repo.repo,
-                issue_number: github_1.default.context.issue.number,
+                owner: github.context.repo.owner,
+                repo: github.context.repo.repo,
+                issue_number: github.context.issue.number,
                 body: (0, reply_template_1.renderReplyTemplate)(constants_1.ISSUE_REPLY_TEMPLATES.USER_ALREADY_APPROVED, {})
             });
             return;
         }
         allowedUsers += `\n${addingUserId}`;
-        fs_1.default.writeFileSync('./.allowed-users', allowedUsers, 'utf-8');
-        yield exec_1.default.exec('git', ['config', 'user.name', 'fbtm-bot']);
-        yield exec_1.default.exec('git', ['config', 'user.email', '<>']);
-        yield exec_1.default.exec('git', ['add', '.']);
-        yield exec_1.default.exec('git', ['commit', '-m', 'add new allowed user via command']);
-        yield exec_1.default.exec('git', ['push', 'origin', 'main']);
+        fs.writeFileSync('./.allowed-users', allowedUsers, 'utf-8');
+        yield exec.exec('git', ['config', 'user.name', 'fbtm-bot']);
+        yield exec.exec('git', ['config', 'user.email', '<>']);
+        yield exec.exec('git', ['add', '.']);
+        yield exec.exec('git', ['commit', '-m', 'add new allowed user via command']);
+        yield exec.exec('git', ['push', 'origin', 'main']);
         yield octokit.rest.issues.createComment({
-            owner: github_1.default.context.repo.owner,
-            repo: github_1.default.context.repo.repo,
-            issue_number: github_1.default.context.issue.number,
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+            issue_number: github.context.issue.number,
             body: (0, reply_template_1.renderReplyTemplate)(constants_1.ISSUE_REPLY_TEMPLATES.USER_APPROVED, {
                 'approved_user': payload.comment.user.login
             })
@@ -354,6 +420,29 @@ exports["default"] = grantAuthorPermissionCommand;
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -363,51 +452,48 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const types_1 = __nccwpck_require__(8164);
 const reply_template_1 = __nccwpck_require__(3125);
 const constants_1 = __nccwpck_require__(5105);
-const core_1 = __importDefault(__nccwpck_require__(2186));
-const exec_1 = __importDefault(__nccwpck_require__(1514));
-const github_1 = __importDefault(__nccwpck_require__(5438));
-const fs_1 = __importDefault(__nccwpck_require__(7147));
+const core = __importStar(__nccwpck_require__(2186));
+const exec = __importStar(__nccwpck_require__(1514));
+const github = __importStar(__nccwpck_require__(5438));
+const fs = __importStar(__nccwpck_require__(7147));
 const revokeAuthorPermissionCommand = {
     name: 'revokeauthorpermission',
     requiredPermissionLevel: types_1.PermissionLevel.MAINTAINER,
     run: (command, userPermissionLevel) => __awaiter(void 0, void 0, void 0, function* () {
-        const githubToken = core_1.default.getInput('github-token', { required: true });
-        const octokit = github_1.default.getOctokit(githubToken);
+        const githubToken = core.getInput('github-token', { required: true });
+        const octokit = github.getOctokit(githubToken);
         // read allowed users and add the issue author to it
-        let allowedUsers = fs_1.default.readFileSync('./.allowed-users', 'utf-8');
-        if (github_1.default.context.eventName !== 'issue_comment') {
+        let allowedUsers = fs.readFileSync('./.allowed-users', 'utf-8');
+        if (github.context.eventName !== 'issue_comment') {
             return;
         }
-        const payload = github_1.default.context.payload;
+        const payload = github.context.payload;
         const removedUserId = payload.comment.user.id.toString();
         let allowedUserIds = allowedUsers.split('\n');
         if (!allowedUserIds.includes(removedUserId)) {
             yield octokit.rest.issues.createComment({
-                owner: github_1.default.context.repo.owner,
-                repo: github_1.default.context.repo.repo,
-                issue_number: github_1.default.context.issue.number,
+                owner: github.context.repo.owner,
+                repo: github.context.repo.repo,
+                issue_number: github.context.issue.number,
                 body: (0, reply_template_1.renderReplyTemplate)(constants_1.ISSUE_REPLY_TEMPLATES.USER_NOT_APPROVED, {})
             });
             return;
         }
         allowedUserIds = allowedUserIds.filter(x => x != removedUserId);
-        fs_1.default.writeFileSync('./.allowed-users', allowedUserIds.join('\n'), 'utf-8');
-        yield exec_1.default.exec('git', ['config', 'user.name', 'fbtm-bot']);
-        yield exec_1.default.exec('git', ['config', 'user.email', '<>']);
-        yield exec_1.default.exec('git', ['add', '.']);
-        yield exec_1.default.exec('git', ['commit', '-m', 'remove allowed user']);
-        yield exec_1.default.exec('git', ['push', 'origin', 'main']);
+        fs.writeFileSync('./.allowed-users', allowedUserIds.join('\n'), 'utf-8');
+        yield exec.exec('git', ['config', 'user.name', 'fbtm-bot']);
+        yield exec.exec('git', ['config', 'user.email', '<>']);
+        yield exec.exec('git', ['add', '.']);
+        yield exec.exec('git', ['commit', '-m', 'remove allowed user']);
+        yield exec.exec('git', ['push', 'origin', 'main']);
         yield octokit.rest.issues.createComment({
-            owner: github_1.default.context.repo.owner,
-            repo: github_1.default.context.repo.repo,
-            issue_number: github_1.default.context.issue.number,
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+            issue_number: github.context.issue.number,
             body: (0, reply_template_1.renderReplyTemplate)(constants_1.ISSUE_REPLY_TEMPLATES.APPROVED_USER_REMOVED, {
                 'removed_user': payload.comment.user.login
             })
@@ -564,6 +650,29 @@ exports.TEMPLATE_FOOTER = '<sup><sub>in response to @{{ username }} (github user
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -577,30 +686,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const io_1 = __importDefault(__nccwpck_require__(7436));
-const fs_1 = __importDefault(__nccwpck_require__(7147));
+const io = __importStar(__nccwpck_require__(7436));
+const fs = __importStar(__nccwpck_require__(7147));
 const registry_1 = __importDefault(__nccwpck_require__(6617));
 const constants_1 = __nccwpck_require__(5105);
 const diffFile = (oldFile, newFile, outputFile) => __awaiter(void 0, void 0, void 0, function* () {
     // TODO: rework this!!
     // I believe it is incredibly inefficient in terms of both memory and CPU
     // and something better can definitely be done here.
-    const oldContent = fs_1.default.readFileSync(oldFile, 'utf-8').split('\n');
-    const newContent = fs_1.default.readFileSync(newFile, 'utf-8').split('\n');
+    const oldContent = fs.readFileSync(oldFile, 'utf-8').split('\n');
+    const newContent = fs.readFileSync(newFile, 'utf-8').split('\n');
     const added = newContent.filter(x => !oldContent.includes(x));
     const removed = oldContent.filter(x => !newContent.includes(x));
     const content = `// new lines (count = ${added.length}):\n\n${added.join('\n')}\n\n// old lines (count = ${removed.length})\n\n${removed.join('\n')}`;
-    fs_1.default.writeFileSync(outputFile, content, { encoding: 'utf-8', mode: 'a' });
+    fs.writeFileSync(outputFile, content, { encoding: 'utf-8', mode: 'a' });
 });
 const performDiffForProduct = (oldRev, newRev, product) => __awaiter(void 0, void 0, void 0, function* () {
     const oldSearchRoot = `./search/${product}/${oldRev}/`;
     const newSearchRoot = `./search/${product}/${newRev}/`;
     const outputRoot = `./diff/${product}/${oldRev}-${newRev}/`;
-    yield io_1.default.mkdirP(outputRoot);
+    yield io.mkdirP(outputRoot);
     let promises = [];
     for (const searchType of registry_1.default) {
         const oldSearchFile = oldSearchRoot + searchType.filename;
-        if (!fs_1.default.existsSync(oldSearchFile)) {
+        if (!fs.existsSync(oldSearchFile)) {
             return false;
         }
         const newSearchFile = newSearchRoot + searchType.filename;
@@ -625,6 +734,29 @@ exports["default"] = performDiff;
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -634,22 +766,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const exec_1 = __importDefault(__nccwpck_require__(1514));
-const io_1 = __importDefault(__nccwpck_require__(7436));
+const exec = __importStar(__nccwpck_require__(1514));
+const io = __importStar(__nccwpck_require__(7436));
 const constants_1 = __nccwpck_require__(5105);
 const fetchRevProduct = (rev, dir, product) => __awaiter(void 0, void 0, void 0, function* () {
     const fbUrl = `https://www.facebook.com/btarchive/${encodeURIComponent(rev)}/${product}`;
-    yield io_1.default.mkdirP('./working/archives/');
-    let exit = yield exec_1.default.exec('curl', [fbUrl, '-o', `./working/archive/${product}.zip`]);
+    yield io.mkdirP('./working/archives/');
+    let exit = yield exec.exec('curl', [fbUrl, '-o', `./working/archive/${product}.zip`]);
     if (exit !== 0) {
         return false;
     }
-    yield io_1.default.mkdirP(`${dir}/${product}/`);
-    exit = yield exec_1.default.exec('tar', ['-xzf', `./working/archive/${product}.zip`, `${dir}/${product}/`]);
+    yield io.mkdirP(`${dir}/${product}/`);
+    exit = yield exec.exec('tar', ['-xzf', `./working/archive/${product}.zip`, `${dir}/${product}/`]);
     return exit === 0;
 });
 const fetchRev = (rev, dir) => __awaiter(void 0, void 0, void 0, function* () {
@@ -691,6 +820,29 @@ exports["default"] = searchRegistry;
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -700,12 +852,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const exec_1 = __importDefault(__nccwpck_require__(1514));
-const fs_1 = __importDefault(__nccwpck_require__(7147));
+const exec = __importStar(__nccwpck_require__(1514));
+const fs = __importStar(__nccwpck_require__(7147));
 const jsRoutePathSearch = {
     filename: 'js-route-builder.js',
     supportedPlatforms: [
@@ -716,8 +865,8 @@ const jsRoutePathSearch = {
     ],
     shouldDiff: true,
     performSearch: (targetDirectory, outputFile) => __awaiter(void 0, void 0, void 0, function* () {
-        const outputStream = fs_1.default.createWriteStream(outputFile, { flags: 'a' });
-        const result = yield exec_1.default.exec('grep', ['-Rh', 'jsRouteBuilder")("', targetDirectory], {
+        const outputStream = fs.createWriteStream(outputFile, { flags: 'a' });
+        const result = yield exec.exec('grep', ['-Rh', 'jsRouteBuilder")("', targetDirectory], {
             outStream: outputStream
         });
         return result === 0;
@@ -733,6 +882,29 @@ exports["default"] = jsRoutePathSearch;
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -742,12 +914,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const exec_1 = __importDefault(__nccwpck_require__(1514));
-const fs_1 = __importDefault(__nccwpck_require__(7147));
+const exec = __importStar(__nccwpck_require__(1514));
+const fs = __importStar(__nccwpck_require__(7147));
 const relayOperationSearchType = {
     filename: 'relay-operations.js',
     supportedPlatforms: [
@@ -758,8 +927,8 @@ const relayOperationSearchType = {
     ],
     shouldDiff: true,
     performSearch: (targetDirectory, outputFile) => __awaiter(void 0, void 0, void 0, function* () {
-        const outputStream = fs_1.default.createWriteStream(outputFile, { flags: 'a' });
-        const result = yield exec_1.default.exec('grep', ['-Rh', 'RelayOperation",[', targetDirectory], {
+        const outputStream = fs.createWriteStream(outputFile, { flags: 'a' });
+        const result = yield exec.exec('grep', ['-Rh', 'RelayOperation",[', targetDirectory], {
             outStream: outputStream
         });
         return result === 0;
@@ -775,6 +944,29 @@ exports["default"] = relayOperationSearchType;
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -784,12 +976,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const exec_1 = __importDefault(__nccwpck_require__(1514));
-const fs_1 = __importDefault(__nccwpck_require__(7147));
+const exec = __importStar(__nccwpck_require__(1514));
+const fs = __importStar(__nccwpck_require__(7147));
 const xControllerSearch = {
     filename: 'xcontroller-search.js',
     supportedPlatforms: [
@@ -800,8 +989,8 @@ const xControllerSearch = {
     ],
     shouldDiff: true,
     performSearch: (targetDirectory, outputFile) => __awaiter(void 0, void 0, void 0, function* () {
-        const outputStream = fs_1.default.createWriteStream(outputFile, { flags: 'a' });
-        const result = yield exec_1.default.exec('grep', ['-Rh', 'XController").cr', targetDirectory], {
+        const outputStream = fs.createWriteStream(outputFile, { flags: 'a' });
+        const result = yield exec.exec('grep', ['-Rh', 'XController").cr', targetDirectory], {
             outStream: outputStream
         });
         return result === 0;
@@ -817,6 +1006,29 @@ exports["default"] = xControllerSearch;
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -832,9 +1044,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const constants_1 = __nccwpck_require__(5105);
 const registry_1 = __importDefault(__nccwpck_require__(6617));
-const io_1 = __importDefault(__nccwpck_require__(7436));
+const io = __importStar(__nccwpck_require__(7436));
 const performSearchForProduct = (rev, path, product) => __awaiter(void 0, void 0, void 0, function* () {
-    yield io_1.default.mkdirP(`./searches/${product}/${rev}/`);
+    yield io.mkdirP(`./searches/${product}/${rev}/`);
     let promises = [];
     for (const searchType of registry_1.default) {
         if (!searchType.supportedPlatforms.includes(product)) {
@@ -862,6 +1074,29 @@ exports["default"] = performSearch;
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -871,15 +1106,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.handleIssueComment = void 0;
-const github_1 = __importDefault(__nccwpck_require__(5438));
+const github = __importStar(__nccwpck_require__(5438));
 const handler_1 = __nccwpck_require__(7058);
 const handleIssueComment = () => __awaiter(void 0, void 0, void 0, function* () {
-    const payload = github_1.default.context.payload;
+    const payload = github.context.payload;
     // TODO: maybe custom prefix?
     if (!payload.comment.body.trim().startsWith('/')) {
         return;
@@ -971,21 +1203,41 @@ var PermissionLevel;
 
 "use strict";
 
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.renderReplyTemplate = void 0;
 const constants_1 = __nccwpck_require__(5105);
-const github_1 = __importDefault(__nccwpck_require__(5438));
+const github = __importStar(__nccwpck_require__(5438));
 const renderReplyTemplate = (template, variables) => {
     // prefilling common variables
-    variables['action_log_url'] = `https://github.com/${github_1.default.context.repo.owner}/${github_1.default.context.repo.repo}/actions/runs/${github_1.default.context.runNumber}`;
-    variables['run_id'] = github_1.default.context.runId.toString();
-    variables['run_number'] = github_1.default.context.runNumber.toString();
+    variables['action_log_url'] = `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runNumber}`;
+    variables['run_id'] = github.context.runId.toString();
+    variables['run_number'] = github.context.runNumber.toString();
     // TODO: handle other types
-    if (github_1.default.context.eventName === 'issue_comment') {
-        const payload = github_1.default.context.payload;
+    if (github.context.eventName === 'issue_comment') {
+        const payload = github.context.payload;
         variables['user_id'] = payload.comment.user.id.toString();
         variables['username'] = payload.comment.user.login;
     }
