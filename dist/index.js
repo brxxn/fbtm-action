@@ -182,7 +182,6 @@ const constants_1 = __nccwpck_require__(5105);
 const core = __importStar(__nccwpck_require__(2186));
 const exec = __importStar(__nccwpck_require__(1514));
 const github = __importStar(__nccwpck_require__(5438));
-const io = __importStar(__nccwpck_require__(7436));
 const fs = __importStar(__nccwpck_require__(7147));
 const fetcher_1 = __importDefault(__nccwpck_require__(5170));
 const searcher_1 = __importDefault(__nccwpck_require__(6045));
@@ -275,12 +274,9 @@ const approveCommand = {
                 body
             });
         });
-        const revDirectory = flags.includes('compare-to-current') ? './working/js/' : './current/';
-        // clear out current if not comparing
-        if (!flags.includes('compare-to-current')) {
-            yield io.rmRF('./current/');
-            yield io.mkdirP('./current/');
-        }
+        // TODO: maybe support publishing this?
+        // git doesn't like committing large things like this, so we put it in an ignored directory
+        const revDirectory = './working/js/';
         // fetch the archive of the rev from facebook
         const fetchResult = yield (0, fetcher_1.default)(rev, revDirectory);
         if (!fetchResult) {
