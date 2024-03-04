@@ -110,13 +110,9 @@ const approveCommand: Command = {
       });
     };
     
-    const revDirectory = flags.includes('compare-to-current') ? './working/js/' : './current/';
-
-    // clear out current if not comparing
-    if (!flags.includes('compare-to-current')) {
-      await io.rmRF('./current/');
-      await io.mkdirP('./current/');
-    }
+    // TODO: maybe support publishing this?
+    // git doesn't like committing large things like this, so we put it in an ignored directory
+    const revDirectory = './working/js/';
 
     // fetch the archive of the rev from facebook
     const fetchResult = await fetchRev(rev, revDirectory);
