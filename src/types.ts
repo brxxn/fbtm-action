@@ -23,4 +23,5 @@ export interface SearchType {
   shouldDiff: boolean;
   supportedPlatforms: string[];
   performSearch: (targetDirectory: string, outputFile: string) => Promise<boolean>;
+  performDiff?: (oldFile: string, newFile: string, outputFile: string) => Promise<boolean>;
 };

@@ -14,6 +14,7 @@ const diffFile = async (oldFile: string, newFile: string, outputFile: string) =>
   const removed = oldContent.filter(x => !newContent.includes(x));
   const content = `// new lines (count = ${added.length}):\n\n${added.join('\n')}\n\n// old lines (count = ${removed.length})\n\n${removed.join('\n')}`
   fs.writeFileSync(outputFile, content, { encoding: 'utf-8' });
+  return true;
 };
 
 const performDiffForProduct = async (oldRev: string, newRev: string, product: string) => {
@@ -21,16 +22,22 @@ const performDiffForProduct = async (oldRev: string, newRev: string, product: st
   const newSearchRoot = `./searches/${product}/${newRev}/`;
   const outputRoot = `./diff/${product}/${oldRev}-${newRev}/`;
   await io.mkdirP(outputRoot);
-  let promises: Promise<void>[] = [];
+  let promises: Promise<boolean>[] = [];
   for (const searchType of searchRegistry) {
+    if (!searchType.shouldDiff) {
+      continue;
+    }
     const oldSearchFile = oldSearchRoot + searchType.filename;
     if (!fs.existsSync(oldSearchFile)) {
       return false;
     }
     const newSearchFile = newSearchRoot + searchType.filename;
-    promises.push(diffFile(oldSearchFile, newSearchFile, outputRoot + searchType.filename));
+    let promise = searchType.performDiff ?
+      searchType.performDiff(oldSearchFile, newSearchFile, outputRoot + searchType.filename) :
+      diffFile(oldSearchFile, newSearchFile, outputRoot + searchType.filename);
+    promises.push(promise);
   }
-  return true;
+  return (await Promise.all(promises)).every(x => x);
 };
 
 const performDiff = async (oldRev: string, newRev: string) => {
