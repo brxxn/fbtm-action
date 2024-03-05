@@ -331,6 +331,7 @@ const approveCommand = {
         const updatedRef = updatedRepo.data.commit.sha;
         // finally, update our message.
         yield updateProcessing(constants_1.ISSUE_REPLY_TEMPLATES.REV_PROCESSED, {
+            branch,
             ref: updatedRef
         });
         // close issue upon completion
@@ -644,7 +645,7 @@ exports.ISSUE_REPLY_TEMPLATES = {
     REV_PROCESSED: {
         emoji: exports.EMOJIS.SUCCESS,
         title: 'proccessed rev!',
-        body: 'this rev has been processed and is now on the main branch @ `{{ ref }}`! this issue is now being closed.'
+        body: 'this rev has been processed and is now on the `{{ branch }}` branch @ `{{ ref }}`! this issue is now being closed.'
     },
     USER_ALREADY_APPROVED: {
         emoji: exports.EMOJIS.BAD_REQUEST,

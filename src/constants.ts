@@ -113,7 +113,7 @@ export const ISSUE_REPLY_TEMPLATES = {
   REV_PROCESSED: {
     emoji: EMOJIS.SUCCESS,
     title: 'proccessed rev!',
-    body: 'this rev has been processed and is now on the main branch @ `{{ ref }}`! this issue is now being closed.'
+    body: 'this rev has been processed and is now on the `{{ branch }}` branch @ `{{ ref }}`! this issue is now being closed.'
   },
   USER_ALREADY_APPROVED: {
     emoji: EMOJIS.BAD_REQUEST,

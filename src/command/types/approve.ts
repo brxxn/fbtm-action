@@ -179,6 +179,7 @@ const approveCommand: Command = {
 
     // finally, update our message.
     await updateProcessing(ISSUE_REPLY_TEMPLATES.REV_PROCESSED, {
+      branch,
       ref: updatedRef
     });
     
