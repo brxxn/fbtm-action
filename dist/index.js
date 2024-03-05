@@ -230,6 +230,7 @@ const approveCommand = {
             return;
         }
         // switch to branch
+        yield exec.exec('git', ['fetch']);
         yield exec.exec('git', ['checkout', branch]);
         // find the rev in issue
         const payload = github.context.payload;

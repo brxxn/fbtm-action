@@ -63,6 +63,7 @@ const approveCommand: Command = {
     }
 
     // switch to branch
+    await exec.exec('git', ['fetch']);
     await exec.exec('git', ['checkout', branch]);
 
     // find the rev in issue
