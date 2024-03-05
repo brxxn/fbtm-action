@@ -957,6 +957,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const exec = __importStar(__nccwpck_require__(1514));
 const fs = __importStar(__nccwpck_require__(7147));
+;
+;
 const relayOperationSearchType = {
     filename: 'relay-operations.js',
     supportedPlatforms: [
@@ -967,12 +969,83 @@ const relayOperationSearchType = {
     ],
     shouldDiff: true,
     performSearch: (targetDirectory, outputFile) => __awaiter(void 0, void 0, void 0, function* () {
-        const outputStream = fs.createWriteStream(outputFile, { flags: 'a' });
-        const result = yield exec.exec('grep', ['-Rh', 'RelayOperation",\\[', targetDirectory], {
-            outStream: outputStream
-        });
-        return result === 0;
-    })
+        const result = yield exec.getExecOutput('grep', ['-Rh', 'RelayOperation",\\[', targetDirectory]);
+        const lines = result.stdout.split('\n');
+        let resultObject = {};
+        let invalidResults = 0;
+        for (const line of lines) {
+            const nameMatch = line.match(/__d\("(([A-Z]|[a-z]|[0-9]|_)+)",\[/);
+            if (nameMatch === null) {
+                console.warn(`found invalid name match while diffing: ${line}`);
+                invalidResults++;
+                continue;
+            }
+            const exportsMatch = line.match(/\.exports\="(([0-9])+)"/);
+            if (exportsMatch === null) {
+                console.warn(`found invalid export match while diffing: ${line}`);
+                invalidResults++;
+                continue;
+            }
+            const name = nameMatch[1];
+            const docId = exportsMatch[1];
+            resultObject[name] = docId;
+        }
+        resultObject['__metadata'] = {
+            resultCount: Object.keys(resultObject).length,
+            invalidResultCount: invalidResults
+        };
+        const resultString = JSON.stringify(resultObject, null, 2);
+        fs.writeFileSync(outputFile, resultString, { encoding: 'utf-8' });
+        return true;
+    }),
+    performDiff: (oldFile, newFile, outputFile) => __awaiter(void 0, void 0, void 0, function* () {
+        const oldContent = fs.readFileSync(oldFile, 'utf-8');
+        const newContent = fs.readFileSync(newFile, 'utf-8');
+        let oldObject = {};
+        let newObject = {};
+        try {
+            oldObject = JSON.parse(oldContent);
+            newObject = JSON.parse(newContent);
+        }
+        catch (exception) {
+            console.error(exception);
+            return false;
+        }
+        // filter out metadata keys
+        delete oldObject['__metadata'];
+        delete newObject['__metadata'];
+        // form our added, removed, updated objects
+        let added = {};
+        let removed = {};
+        let updated = {};
+        for (const newDocName of Object.keys(newObject).filter(x => !Object.keys(oldObject).includes(x))) {
+            added[newDocName] = newObject[newDocName];
+        }
+        for (const newDocName of Object.keys(oldObject).filter(x => !Object.keys(newObject).includes(x))) {
+            removed[newDocName] = newObject[newDocName];
+        }
+        for (const sharedDocName of Object.keys(newObject).filter(x => Object.keys(oldObject).includes(x))) {
+            if (newObject[sharedDocName] === oldObject[sharedDocName]) {
+                continue;
+            }
+            updated[sharedDocName] = {
+                previousDocId: oldObject[sharedDocName],
+                updatedDocId: oldObject[sharedDocName]
+            };
+        }
+        // finally, write our results to a file
+        const resultObject = {
+            __metadata: {
+                addedCount: Object.keys(added).length,
+                removedCount: Object.keys(removed).length,
+                updatedCount: Object.keys(updated).length
+            },
+            added, removed, updated
+        };
+        const resultString = JSON.stringify(resultObject, null, 2);
+        fs.writeFileSync(outputFile, resultString, { encoding: 'utf-8' });
+        return true;
+    }),
 };
 exports["default"] = relayOperationSearchType;
 //# sourceMappingURL=relayOperation.js.map
