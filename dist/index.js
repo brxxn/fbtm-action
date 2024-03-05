@@ -208,7 +208,7 @@ const approveCommand = {
         // check to see if there are any maintainer flags
         if (userPermissionLevel > types_1.PermissionLevel.MAINTAINER) {
             for (const maintainerOnlyFlag of constants_1.MAINTAINER_ONLY_FLAGS) {
-                if (flags.includes(maintainerOnlyFlag)) {
+                if (flags.includes(maintainerOnlyFlag) || maintainerOnlyFlag.startsWith('use-branch:')) {
                     yield replyWithTemplate(constants_1.ISSUE_REPLY_TEMPLATES.FLAG_REQUIRES_MAINTAINER, {
                         flag: maintainerOnlyFlag
                     });
@@ -216,6 +216,21 @@ const approveCommand = {
                 }
             }
         }
+        // get the current branch we should be working on
+        // TODO: allow support for a different default branch
+        let branch = 'main';
+        for (const flag of flags) {
+            if (flag.startsWith('use-branch:')) {
+                branch = flag.slice('use-branch:'.length);
+            }
+        }
+        const shouldBlockMainBranch = core.getBooleanInput('block-main-branch-push', { required: true });
+        if (shouldBlockMainBranch && branch === 'main') {
+            yield replyWithTemplate(constants_1.ISSUE_REPLY_TEMPLATES.PUSH_TO_MAIN_BLOCKED, {});
+            return;
+        }
+        // switch to branch
+        yield exec.exec('git', ['checkout', branch]);
         // find the rev in issue
         const payload = github.context.payload;
         // find if fb-rev: in title
@@ -305,7 +320,7 @@ const approveCommand = {
         yield exec.exec('git', ['config', 'user.email', '<>']);
         yield exec.exec('git', ['add', '.']);
         yield exec.exec('git', ['commit', '-m', `process rev ${rev} (#${github.context.issue.number})`]);
-        yield exec.exec('git', ['push', 'origin', 'main']);
+        yield exec.exec('git', ['push', 'origin', branch]);
         // fetch the ref
         const updatedRepo = yield octokit.rest.repos.getBranch({
             owner: github.context.repo.owner,
@@ -590,6 +605,12 @@ exports.ISSUE_REPLY_TEMPLATES = {
             'has been removed from processing. if you are wanting to compare the current rev to this rev, add the ' +
             '`compare-to-current` flag. if you want to continue anyways (which may break things), add the ' +
             '`dangerously-process-old-rev` flag.'
+    },
+    PUSH_TO_MAIN_BLOCKED: {
+        emoji: exports.EMOJIS.BAD_REQUEST,
+        title: 'cannot push to main',
+        body: 'it looks like you are trying to push to the main branch. the action that triggered this workflow ' +
+            'has disabled pushing to main. please specify a different branch using the `use-branch:[branch]` flag.'
     },
     FAILED_TO_FETCH_REV: {
         emoji: exports.EMOJIS.ERROR,

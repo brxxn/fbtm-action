@@ -76,6 +76,12 @@ export const ISSUE_REPLY_TEMPLATES = {
       '`compare-to-current` flag. if you want to continue anyways (which may break things), add the ' +
       '`dangerously-process-old-rev` flag.'
   },
+  PUSH_TO_MAIN_BLOCKED: {
+    emoji: EMOJIS.BAD_REQUEST,
+    title: 'cannot push to main',
+    body: 'it looks like you are trying to push to the main branch. the action that triggered this workflow ' +
+      'has disabled pushing to main. please specify a different branch using the `use-branch:[branch]` flag.'
+  },
   FAILED_TO_FETCH_REV: {
     emoji: EMOJIS.ERROR,
     title: 'failed to fetch rev',
