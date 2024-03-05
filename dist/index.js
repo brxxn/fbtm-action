@@ -231,7 +231,7 @@ const approveCommand = {
         }
         // switch to branch
         yield exec.exec('git', ['fetch']);
-        yield exec.exec('git', ['checkout', branch]);
+        yield exec.exec('git', ['switch', branch]);
         // find the rev in issue
         const payload = github.context.payload;
         // find if fb-rev: in title

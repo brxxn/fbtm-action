@@ -64,7 +64,7 @@ const approveCommand: Command = {
 
     // switch to branch
     await exec.exec('git', ['fetch']);
-    await exec.exec('git', ['checkout', branch]);
+    await exec.exec('git', ['switch', branch]);
 
     // find the rev in issue
     const payload = github.context.payload as IssueCommentEvent;
