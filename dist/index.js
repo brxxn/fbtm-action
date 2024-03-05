@@ -969,7 +969,9 @@ const relayOperationSearchType = {
     ],
     shouldDiff: true,
     performSearch: (targetDirectory, outputFile) => __awaiter(void 0, void 0, void 0, function* () {
-        const result = yield exec.getExecOutput('grep', ['-Rh', 'RelayOperation",\\[', targetDirectory]);
+        const result = yield exec.getExecOutput('grep', ['-Rh', 'RelayOperation",\\[', targetDirectory], {
+            silent: true
+        });
         const lines = result.stdout.split('\n');
         let resultObject = {};
         let invalidResults = 0;
