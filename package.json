@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc && ncc build lib/index.js",
+    "setup": "cp pre-commit-hook.sh .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
     "test": "echo \"no tests provided\""
   },
   "repository": {
