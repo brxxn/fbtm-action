@@ -36,7 +36,7 @@ const approveCommand: Command = {
     // check to see if there are any maintainer flags
     if (userPermissionLevel > PermissionLevel.MAINTAINER) {
       for (const maintainerOnlyFlag of MAINTAINER_ONLY_FLAGS) {
-        if (flags.includes(maintainerOnlyFlag)) {
+        if (flags.includes(maintainerOnlyFlag) || maintainerOnlyFlag.startsWith('use-branch:')) {
           await replyWithTemplate(ISSUE_REPLY_TEMPLATES.FLAG_REQUIRES_MAINTAINER, {
             flag: maintainerOnlyFlag
           });
@@ -44,6 +44,27 @@ const approveCommand: Command = {
         }
       }
     }
+
+    // get the current branch we should be working on
+    // TODO: allow support for a different default branch
+    let branch = 'main';
+
+    for (const flag of flags) {
+      if (flag.startsWith('use-branch:')) {
+        branch = flag.slice('use-branch:'.length);
+      }
+    }
+
+    const shouldBlockMainBranch = core.getBooleanInput('block-main-branch-push', { required: true });
+
+    if (shouldBlockMainBranch && branch === 'main') {
+      await replyWithTemplate(ISSUE_REPLY_TEMPLATES.PUSH_TO_MAIN_BLOCKED, {});
+      return;
+    }
+
+    // switch to branch
+    await exec.exec('git', ['fetch']);
+    await exec.exec('git', ['switch', branch]);
 
     // find the rev in issue
     const payload = github.context.payload as IssueCommentEvent;
@@ -146,7 +167,7 @@ const approveCommand: Command = {
     await exec.exec('git', ['config', 'user.email', '<>']);
     await exec.exec('git', ['add', '.']);
     await exec.exec('git', ['commit', '-m', `process rev ${rev} (#${github.context.issue.number})`]);
-    await exec.exec('git', ['push', 'origin', 'main']);
+    await exec.exec('git', ['push', 'origin', branch]);
 
     // fetch the ref
     const updatedRepo = await octokit.rest.repos.getBranch({
@@ -158,6 +179,7 @@ const approveCommand: Command = {
 
     // finally, update our message.
     await updateProcessing(ISSUE_REPLY_TEMPLATES.REV_PROCESSED, {
+      branch,
       ref: updatedRef
     });
     
