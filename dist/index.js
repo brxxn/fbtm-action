@@ -1020,19 +1020,21 @@ const relayOperationSearchType = {
         let added = {};
         let removed = {};
         let updated = {};
-        for (const newDocName of Object.keys(newObject).filter(x => !Object.keys(oldObject).includes(x))) {
+        const newObjectKeys = Object.keys(newObject);
+        const oldObjectKeys = Object.keys(oldObject);
+        for (const newDocName of newObjectKeys.filter(x => !oldObjectKeys.includes(x))) {
             added[newDocName] = newObject[newDocName];
         }
-        for (const newDocName of Object.keys(oldObject).filter(x => !Object.keys(newObject).includes(x))) {
-            removed[newDocName] = newObject[newDocName];
+        for (const newDocName of oldObjectKeys.filter(x => !newObjectKeys.includes(x))) {
+            removed[newDocName] = oldObject[newDocName];
         }
-        for (const sharedDocName of Object.keys(newObject).filter(x => Object.keys(oldObject).includes(x))) {
+        for (const sharedDocName of newObjectKeys.filter(x => oldObjectKeys.includes(x))) {
             if (newObject[sharedDocName] === oldObject[sharedDocName]) {
                 continue;
             }
             updated[sharedDocName] = {
                 previousDocId: oldObject[sharedDocName],
-                updatedDocId: oldObject[sharedDocName]
+                updatedDocId: newObject[sharedDocName]
             };
         }
         // finally, write our results to a file
