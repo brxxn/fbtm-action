@@ -23,7 +23,9 @@ const relayOperationSearchType: SearchType = {
   ],
   shouldDiff: true,
   performSearch: async (targetDirectory, outputFile) => {
-    const result = await exec.getExecOutput('grep', ['-Rh', 'RelayOperation",\\[', targetDirectory]);
+    const result = await exec.getExecOutput('grep', ['-Rh', 'RelayOperation",\\[', targetDirectory], {
+      silent: true
+    });
     const lines = result.stdout.split('\n');
     let resultObject: {[key: string]: string|SearchResultMetadata} = {};
     let invalidResults = 0;
